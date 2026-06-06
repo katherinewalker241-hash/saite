@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{SITE_NAME}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e50914;
+      --primary-light: #ff2d55;
+      --primary-deep: #b20710;
+      --accent: #60a5fa;
+      --accent-gold: #fbbf24;
+      --bg: #0b1220;
+      --card: linear-gradient(165deg, #151d2e 0%, #111827 55%, #0f172a 100%);
+      --chip: rgba(30, 41, 59, 0.92);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --stroke: rgba(148, 163, 184, 0.14);
+      --stroke-hi: rgba(16, 185, 129, 0.48);
+      --red: #e50914;
+      --red2: #ff2d55;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 100% 60% at 50% -20%, rgba(229, 9, 20, 0.16), transparent),
+        radial-gradient(ellipse 50% 40% at 100% 0%, rgba(255, 45, 85, 0.09), transparent);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .container { max-width: 1180px; margin: 0 auto; padding: 1.25rem; }
+    .hero {
+      border: 1px solid rgba(229, 9, 20, 0.48);
+      border-radius: 20px;
+      padding: 1.35rem 1.65rem;
+      background: linear-gradient(180deg, rgba(21, 29, 46, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(229, 9, 20, 0.08);
+      margin-bottom: 1.25rem;
+    }
+    .promo-banner {
+      border: 1px solid rgba(229, 9, 20, 0.45);
+      border-radius: 20px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, rgba(229, 9, 20, 0.12), rgba(15, 23, 42, 0.96));
+      box-shadow: 0 14px 34px rgba(0,0,0,0.4);
+    }
+    .promo-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      color: #fff;
+    }
+    .promo-sub {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-bottom: 0.7rem;
+    }
+    .promo-actions { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .promo-btn {
+      border-radius: 10px;
+      padding: 0.58rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #fff;
+      background: rgba(255,255,255,0.04);
+      cursor: pointer;
+    }
+    .promo-btn.primary {
+      background: linear-gradient(180deg, var(--primary-light) 0%, var(--primary-deep) 100%);
+      border-color: rgba(178, 7, 16, 0.8);
+    }
+    .hero-over { color: var(--accent-gold); font-size: 0.72rem; font-weight: 800; letter-spacing: .12em; }
+    .hero h2 {
+      color: var(--primary-light);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      line-height: 1.1;
+      margin: 0.35rem 0;
+    }
+    .hero p { color: #cbd5e1; font-size: 0.88rem; max-width: 520px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.75rem; }
+    .chip {
+      font-size: 0.68rem; font-weight: 800; padding: 0.32rem 0.65rem; border-radius: 999px;
+      background: var(--chip); color: #ffd4dc; border: 1px solid rgba(229, 9, 20, 0.35);
+    }
+    .toolbar {
+      display: flex; flex-direction: column; gap: 0.75rem;
+      margin: 1.5rem 0 1rem;
+    }
+    @media (min-width: 768px) {
+      .toolbar { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+    .toolbar h1 { font-size: 1.45rem; font-weight: 800; color: #e2e8f0; }
+    .search {
+      width: 100%; max-width: 320px; padding: 0.55rem 1rem; border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(15, 23, 42, 0.95); color: #f1f5f9;
+      font-family: inherit; font-size: 0.88rem;
+    }
+    .search:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.16); }
+    .alert {
+      display: none; padding: 0.85rem 1rem; border-radius: 10px; margin-bottom: 1rem;
+      background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35); color: #bfdbfe;
+    }
+    .alert.on { display: block; }
+    .alert.err { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.35); color: #fecaca; }
+    .grid {
+      display: grid; gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+    @media (min-width: 600px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1100px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .vcard {
+      position: relative;
+      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 14px 40px rgba(0,0,0,0.45);
+      cursor: pointer;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+    }
+    .vcard:focus-within {
+      outline: none;
+      border-color: var(--stroke-hi);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 18px 48px rgba(0, 0, 0, 0.45);
+    }
+    .vcard:hover {
+      transform: translateY(-3px);
+      border-color: var(--stroke-hi);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 22px 56px rgba(0,0,0,0.55),
+        0 0 42px rgba(229, 9, 20, 0.18);
+    }
+    .vcard.ph-card {
+      cursor: default;
+      pointer-events: none;
+      opacity: 0.82;
+      border-color: rgba(255,255,255,0.055);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    .vcard.ph-card:hover {
+      transform: none;
+      border-color: rgba(255,255,255,0.055);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    .vcard-media {
+      position: relative; width: 100%; padding-top: 56.25%;
+      background: radial-gradient(120% 80% at 50% 0%, #1e293b 0%, #0b1220 72%);
+    }
+    .vcard-media-inner {
+      position: absolute; inset: 0;
+      isolation: isolate;
+      contain: layout style;
+    }
+    .vcard-media img, .vcard-media video {
+      width: 100%; height: 100%; object-fit: cover; display: block; background: #05000c;
+    }
+    .skel {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, #0a0a12 0%, #12121a 50%, #0a0a12 100%);
+      background-size: 200% 100%; animation: sh 1.2s ease-in-out infinite;
+    }
+    @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+    .preview-hit {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      z-index: 4; text-decoration: none; color: inherit;
+    }
+    .preview-hit[hidden] { display: none !important; }
+    .play-circ {
+      width: 62px; height: 62px; border-radius: 50%;
+      background: rgba(8,8,12,0.72);
+      border: 1px solid rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+      transition: transform 0.22s var(--ease), border-color 0.22s, background 0.22s;
+    }
+    .vcard:hover .play-circ {
+      border-color: rgba(255,255,255,0.28);
+      background: rgba(229, 9, 20, 0.22);
+      transform: scale(1.04);
+    }
+    .play-tri {
+      width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent;
+      border-left: 19px solid rgba(255,255,255,0.95); margin-left: 5px;
+    }
+    .grad-over {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(8,8,12,0.92) 0%, rgba(10,10,14,0.35) 45%, transparent 100%);
+      opacity: 0.35; z-index: 2; transition: opacity 0.28s var(--ease);
+    }
+    .vcard:hover .grad-over { opacity: 0.72; }
+    .badge-price {
+      position: absolute; top: 10px; right: 10px; z-index: 3;
+      font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.02em;
+      padding: 0.32rem 0.72rem; border-radius: 8px;
+      background: rgba(12,12,16,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+    .badge-price em {
+      font-style: normal; color: var(--red2); font-weight: 700;
+    }
+    .vcard-ph-free .badge-price {
+      background: rgba(34,158,217,0.18);
+      border-color: rgba(34,158,217,0.35);
+      color: #9fdcf7;
+    }
+    .badge-dur {
+      position: absolute; bottom: 10px; right: 10px; z-index: 3;
+      font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.03em;
+      padding: 0.28rem 0.5rem; border-radius: 6px;
+      background: rgba(0,0,0,0.78);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #f5f5f7;
+      font-variant-numeric: tabular-nums;
+    }
+    .load-ov {
+      position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; background: rgba(0,0,0,0.68); color: #fff;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .load-ov[hidden] { display: none !important; }
+    .vcard-body {
+      padding: 1rem 1.125rem 1.125rem; flex: 1; display: flex; flex-direction: column;
+      gap: 0.55rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .vcard-title {
+      font-weight: 600; font-size: 0.9375rem; line-height: 1.35; min-height: 2.6rem;
+      letter-spacing: -0.02em;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      color: #f4f4f6;
+    }
+    .vcard-trust {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem;
+      font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; color: rgba(158,151,168,0.95);
+    }
+    .vcard-trust-item { display: inline-flex; align-items: center; gap: 0.28rem; }
+    .vcard-trust-dot { opacity: 0.45; user-select: none; }
+    .vcard-meta {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 0.65rem;
+      font-size: 0.75rem; color: var(--muted);
+      padding-top: 0.125rem;
+    }
+    .vcard-meta-item {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-variant-numeric: tabular-nums;
+      min-width: 0;
+    }
+    .vcard-meta svg { flex-shrink: 0; opacity: 0.55; }
+    .btn-row { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.15rem; }
+    .btn {
+      font-family: inherit; font-weight: 700; font-size: 0.8rem; border-radius: 10px;
+      padding: 0.58rem 0.875rem; cursor: pointer; border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.03); color: #e8e6ec; text-align: center; text-decoration: none;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+    }
+    .btn:hover {
+      background: rgba(255,255,255,0.065);
+      border-color: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--primary-light) 0%, var(--primary-deep) 100%);
+      color: #fff;
+      border-color: rgba(5, 150, 105, 0.5);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 8px 24px rgba(16, 185, 129, 0.25);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.06);
+      border-color: rgba(0,0,0,0.28);
+      color: #fff;
+    }
+    .price-row {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem;
+      margin-top: 0.2rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .price-row-label { font-size: 0.7rem; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .price-row-amt {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+    .price-row-amt small { font-size: 0.82rem; font-weight: 600; opacity: 0.75; margin-left: 0.15rem; }
+    .ph-card .vcard-title { color: #666; font-family: ui-monospace, monospace; font-size: 0.75rem; word-break: break-all; }
+    /**
+     * Closed <dialog> must stay display:none — never set display:flex on dialog without [open],
+     * or the panel stays visible on the page even though showModal() was never called.
+     * Do not use transform on open dialog: in Chromium it can break top-layer stacking.
+     */
+    dialog.dlg-modal:not([open]) {
+      display: none !important;
+    }
+    dialog.dlg-modal[open] {
+      border: none;
+      border-radius: 18px;
+      max-width: min(440px, calc(100vw - 2rem));
+      width: min(440px, calc(100vw - 2rem));
+      max-height: min(90vh, 720px);
+      height: fit-content;
+      margin: auto;
+      padding: 0;
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: linear-gradient(165deg, #141418 0%, #0c0c10 45%, #09090c 100%);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 28px 80px rgba(0,0,0,0.75), 0 0 100px rgba(16, 185, 129, 0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    dialog.dlg-modal::backdrop {
+      background: rgba(4,4,8,0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    /** While a modal is open, hide card overlays so nothing leaks above the dialog in any browser. */
+    body.modal-dlg-open .vcard:not(.ph-card) .preview-hit,
+    body.modal-dlg-open .vcard:not(.ph-card) .badge-dur,
+    body.modal-dlg-open .vcard:not(.ph-card) .badge-price,
+    body.modal-dlg-open .vcard:not(.ph-card) .grad-over,
+    body.modal-dlg-open .vcard:not(.ph-card) .load-ov {
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .dlg-h {
+      flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(0,0,0,0.2);
+    }
+    .dlg-h strong { font-size: 0.9375rem; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; }
+    .dlg-b {
+      padding: 1.15rem 1.25rem 1.25rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dlg-x {
+      width: 2rem; height: 2rem; border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #c8c4ce; font-size: 1.15rem; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .dlg-x:hover { background: rgba(255,255,255,0.09); color: #fff; }
+    .pay-summary {
+      text-align: center;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .pay-summary-title { font-size: 0.9375rem; font-weight: 600; color: #f4f4f6; line-height: 1.35; margin-bottom: 0.35rem; }
+    .pay-summary-price { font-size: 1.35rem; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+    .pay-summary-price small { font-size: 0.75rem; font-weight: 600; opacity: 0.65; margin-left: 0.25rem; color: #b0aab8; }
+    .pay-note {
+      padding: 0.7rem 0.85rem; border-radius: 10px; margin-bottom: 1rem;
+      font-size: 0.75rem; font-weight: 600; line-height: 1.45; color: #d1fae5;
+      background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28);
+    }
+    .pay-section { margin-bottom: 1.1rem; }
+    .pay-section:last-child { margin-bottom: 0; }
+    .pay-section-title {
+      font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #8a8494; margin-bottom: 0.55rem;
+    }
+    .pay-section-hint {
+      font-size: 0.75rem; color: #8f8898; line-height: 1.45; margin-bottom: 0.65rem;
+    }
+    .btn-block { width: 100%; display: block; box-sizing: border-box; }
+    .pay-actions { display: flex; flex-direction: column; gap: 0.45rem; }
+    .btn-pay-inner {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.55rem; width: 100%; flex-wrap: wrap;
+    }
+    .btn-pay-text { font-weight: 700; letter-spacing: 0.01em; }
+    .pay-method-icons { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .pay-method-icons svg { height: 1.15rem; width: auto; flex-shrink: 0; opacity: 0.95; }
+    .crypto-row {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      padding: 0.75rem 0.85rem;
+      margin-bottom: 0.5rem;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .crypto-row:last-child { margin-bottom: 0; }
+    .crypto-row-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .crypto-label { font-size: 0.8125rem; font-weight: 700; color: #eceaf0; letter-spacing: 0.02em; }
+    .crypto-addr {
+      font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.6875rem; line-height: 1.45; word-break: break-all; color: #c5bfd0;
+      user-select: all;
+    }
+    .btn-copy {
+      flex-shrink: 0;
+      font-family: inherit; font-size: 0.6875rem; font-weight: 700;
+      padding: 0.28rem 0.55rem; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #e2dfe8; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-copy:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.04) !important;
+      border-color: rgba(255,255,255,0.1) !important;
+      color: #ddd9e3 !important;
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.08) !important;
+      border-color: rgba(255,255,255,0.14) !important;
+    }
+    footer { text-align: center; padding: 2rem 1rem; font-size: 0.72rem; color: #666; }
+    .nav-top { display: flex; justify-content: flex-end; padding: 0.5rem 0; }
+    .nav-top a {
+      color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.78rem;
+      padding: 0.4rem 0.75rem; border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(15, 23, 42, 0.8);
+    }
+    .nav-top a:hover { color: #fff; border-color: var(--accent); }
+    .purchase-toast {
+      position: fixed; left: 1rem; bottom: 1rem; z-index: 99990;
+      max-width: min(340px, calc(100vw - 2rem));
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      padding: 0.85rem 1rem; border-radius: 14px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid rgba(229, 9, 20, 0.45);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 24px rgba(229, 9, 20, 0.18);
+      transform: translateY(120%); opacity: 0;
+      transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
+      pointer-events: none;
+    }
+    .purchase-toast.show { transform: translateY(0); opacity: 1; }
+    .purchase-toast.hide { transform: translateY(12px); opacity: 0; }
+    .purchase-toast-dot {
+      flex-shrink: 0; width: 10px; height: 10px; margin-top: 0.35rem; border-radius: 50%;
+      background: var(--primary); box-shadow: 0 0 12px var(--primary);
+      animation: pulse-dot 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+    .purchase-toast-body { flex: 1; min-width: 0; font-size: 0.78rem; line-height: 1.45; color: #cbd5e1; }
+    .purchase-toast-who { display: block; font-weight: 800; color: #f8fafc; margin-bottom: 0.15rem; }
+    .purchase-toast-msg em { font-style: normal; color: var(--accent-gold); font-weight: 800; }
+    .purchase-toast-time { flex-shrink: 0; font-size: 0.62rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    @media (max-width: 480px) {
+      .purchase-toast { left: 0.65rem; right: 0.65rem; max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav-top"><a id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a></div>
+
+    <div class="promo-banner">
+      <div class="promo-title">🎉 Special Offer - All Content $100</div>
+      <div class="promo-sub">Complete collection • Instant delivery • Secure payment</div>
+      <div class="promo-actions">
+        <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+        <button type="button" class="promo-btn primary" id="promo-pay">Pay $100 Now</button>
+      </div>
+    </div>
+
+    <div id="pay-cancel" class="alert" role="status" hidden>Payment cancelled. No charges were made.</div>
+    <div id="err-banner" class="alert err" role="alert" hidden></div>
+
+    <div class="toolbar">
+      <h1 id="grid-heading">Videos</h1>
+      <span class="chip" id="hydrate-chip" hidden style="align-self:flex-start">Updating full data…</span>
+      <input type="search" class="search" id="search" placeholder="Find folders, vip, premium…" autocomplete="off">
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <dialog id="dlg-details" class="dlg-modal">
+    <div class="dlg-h"><strong id="dlg-d-title">Details</strong><button type="button" class="dlg-x" data-close="d" aria-label="Close">×</button></div>
+    <div class="dlg-b" id="dlg-d-body"></div>
+  </dialog>
+
+  <dialog id="dlg-pay" class="dlg-modal" aria-labelledby="dlg-pay-heading">
+    <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
+    <div class="dlg-b">
+      <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
+      <div class="pay-note"><strong>Pay Instantly</strong> (PayPal or card): secure checkout on the delivery site, then Telegram access; discreet name on your statement.
+        <span style="display:block;margin-top:0.45rem">Message us on Telegram and buy the gift card we request — <strong>for free3 bonus contents</strong>.</span></div>
+
+      <div class="pay-section">
+        <div class="pay-section-title">Card &amp; digital wallets</div>
+        <div class="pay-actions">
+          <button type="button" class="btn btn-primary btn-block btn-paddle-cta" style="padding:0.78rem 1rem;border-radius:12px" id="btn-paypp">
+            <span class="btn-pay-inner">
+              <span class="btn-pay-text">Pay Instantly</span>
+              <span class="pay-method-icons" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                <svg viewBox="0 0 38 24" role="img" aria-label="Apple Pay"><rect width="38" height="24" rx="4" fill="currentColor" opacity="0.14"/><path fill="currentColor" d="M9.2 12.1c-.03-2.1 1.7-3.1 1.78-3.16-1-.14-1.95.58-2.45.58-.5 0-1.28-.56-2.1-.55-1.08.02-2.07.63-2.62 1.6-1.12 1.94-.29 4.82.8 6.4.53.77 1.16 1.64 1.99 1.61.8-.03 1.1-.52 2.07-.52.97 0 1.24.52 2.09.5.86-.02 1.4-.78 1.92-1.55.6-.87.85-1.72.86-1.76-.02-.01-1.66-.64-1.67-2.65zM11.1 7.9c.44-.53.74-1.27.66-2-.63.03-1.4.42-1.85.95-.41.47-.77 1.23-.67 1.95.72.06 1.45-.37 1.86-1.9z"/><path fill="currentColor" d="M17.2 8.3h-1.1c-.27 0-.48.07-.63.22-.15.14-.23.35-.23.61v5.5h1.05v-1.55h1.02c.62 0 1.1-.16 1.44-.48.34-.32.51-.76.51-1.32 0-.55-.16-.98-.49-1.3-.33-.32-.8-.48-1.4-.48zm-.05 3.55h-.97V9.35h.97c.42 0 .73.1.94.3.2.2.31.48.31.84 0 .36-.1.64-.3.84-.2.2-.5.3-.95.3zm3.35-3.55h-1.05v5.5h1.05V8.3zm2.2 0l-1.55 5.5h1.1l.33-1.28h1.72l.33 1.28h1.15l-1.58-5.5h-1.5zm-.25 3.35l.58-2.2.58 2.2h-1.16z"/></svg>
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pay-section" id="dlg-pay-crypto-section" hidden>
+        <div class="pay-section-title">Cryptocurrency</div>
+        <div id="dlg-pay-crypto-list"></div>
+        <a class="btn btn-block btn-ghost" style="margin-top:0.65rem;padding:0.72rem 1rem;border-radius:12px;text-decoration:none" id="dlg-pay-crypto-tg" href="#" target="_blank" rel="noopener">Send proof via Telegram</a>
+      </div>
+    </div>
+  </dialog>
+
+  <footer>© {{SITE_NAME}} · Supabase + Wasabi</footer>
+
+  <div id="purchase-toast" class="purchase-toast" hidden role="status" aria-live="polite">
+    <span class="purchase-toast-dot" aria-hidden="true"></span>
+    <div class="purchase-toast-body">
+      <strong class="purchase-toast-who"></strong>
+      <span class="purchase-toast-msg"></span>
+    </div>
+    <span class="purchase-toast-time">just now</span>
+  </div>
+
+  <script>
+    (function () {
+      var EBOOKS_ORIGIN = '{{EBOOKS_SITE_URL}}';
+      var TG_ENV = '{{TELEGRAM_USERNAME}}'.replace(/^@/, '').trim(); /* SSR: Supabase via server; client refreshes from /api/site-brief */
+      var MASK_NAMES = [
+        'Personal Development Ebook', 'Financial Freedom Ebook', 'Digital Marketing Guide',
+        'Health & Wellness Ebook', 'Productivity Masterclass', 'Mindfulness & Meditation Guide',
+        'Entrepreneurship Blueprint'
+      ];
+      var PURCHASE_TOAST_MS = 78000;
+      var purchaseToastTimer = null;
+      function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      }
+
+      /** Most expensive paid item first; everything else shuffled. */
+      function orderVideosForGrid(videos) {
+        var list = (videos || []).slice();
+        if (list.length <= 1) return list;
+        var paid = list.filter(function (v) {
+          return !v.is_free && Number(v.price) > 0;
+        });
+        if (!paid.length) return shuffle(list);
+        var maxP = paid.reduce(function (m, v) {
+          return Math.max(m, Number(v.price) || 0);
+        }, 0);
+        var top = paid.filter(function (v) {
+          return (Number(v.price) || 0) === maxP;
+        });
+        var first = pickRandom(top.length ? top : paid);
+        var rest = list.filter(function (v) { return v.id !== first.id; });
+        return [first].concat(shuffle(rest));
+      }
+
+      function normalizeOrigin(u) {
+        try { return new URL(u).origin; } catch (e) { return ''; }
+      }
+
+      function formatDuration(d) {
+        if (d == null || d === '') return '';
+        if (typeof d === 'number' && !isNaN(d)) {
+          var sec = Math.max(0, Math.round(Number(d)));
+          var m = Math.floor(sec / 60),
+            s = sec % 60;
+          return m + 'min ' + s + 's';
+        }
+        var parts = String(d).split(':');
+        if (parts.length === 2) {
+          var mm = parseInt(parts[0], 10) || 0,
+            ss = Math.round(parseFloat(parts[1]) || 0);
+          return mm + 'min ' + ss + 's';
+        }
+        if (parts.length === 3) {
+          var h = parseInt(parts[0], 10) || 0,
+            mm2 = parseInt(parts[1], 10) || 0,
+            ss2 = Math.round(parseFloat(parts[2]) || 0);
+          return h + 'h ' + mm2 + 'm ' + ss2 + 's';
+        }
+        return String(d);
+      }
+
+      function formatViews(v) {
+        v = Number(v) || 0;
+        if (v < 1000) return v + ' views';
+        if (v < 1e6) return (v / 1000).toFixed(1) + 'K views';
+        return (v / 1e6).toFixed(1) + 'M views';
+      }
+
+      function formatDateRel(iso) {
+        if (!iso) return '';
+        var date = new Date(iso), now = new Date();
+        var diff = Math.ceil(Math.abs(now - date) / (864e5));
+        if (diff <= 1) return 'Yesterday';
+        if (diff < 7) return diff + ' days ago';
+        if (diff < 30) return Math.floor(diff / 7) + ' weeks ago';
+        if (diff < 365) return Math.floor(diff / 30) + ' months ago';
+        return Math.floor(diff / 365) + ' years ago';
+      }
+
+      async function fetchSigned(fileKey) {
+        if (!fileKey) return null;
+        var r = await fetch('/api/signed-url?key=' + encodeURIComponent(String(fileKey).trim()));
+        if (!r.ok) return null;
+        var j = await r.json();
+        return j.success && j.url ? j.url : null;
+      }
+
+      function ebooksSuccessUrl(price, maskedName, displayTitle, videoId) {
+        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
+        if (!origin) return null;
+        var masked = maskedName || MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var params = new URLSearchParams();
+        params.set('status', 'success');
+        params.set('product_name', masked);
+        if (displayTitle) params.set('display_title', displayTitle);
+        params.set('amount', String(price));
+        if (videoId) params.set('video_id', String(videoId));
+        var tg = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
+        if (tg) params.set('telegram_username', tg);
+        return origin + '/?' + params.toString();
+      }
+
+      function checkoutUrl(price, maskedName, displayTitle, videoId, method) {
+        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
+        if (!origin) return null;
+        var vid = videoId || '';
+        var masked = maskedName || MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var successUrl = ebooksSuccessUrl(price, masked, displayTitle || 'Digital purchase', vid);
+        if (!successUrl) return null;
+        var p2 = new URLSearchParams();
+        p2.set('amount', String(price));
+        p2.set('currency', 'USD');
+        p2.set('success_url', successUrl);
+        p2.set('product_name', masked);
+        p2.set('display_title', displayTitle || 'Digital purchase');
+        p2.set('method', method || 'paypal');
+        if (vid) p2.set('video_id', vid);
+        var cancelP = new URLSearchParams(p2.toString());
+        cancelP.set('payment_canceled', 'true');
+        p2.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
+        return origin + '/api/paypal-checkout?' + p2.toString();
+      }
+
+      function watchPageUrl(videoId) {
+        return '/watch?id=' + encodeURIComponent(String(videoId || ''));
+      }
+
+      function tgUrlForVideo(v, tgUser) {
+        var msg =
+          '🎬 **' + v.title + '**\n\n' +
+          '💰 **Price:** $' + Number(v.price).toFixed(2) + '\n' +
+          '⏱️ **Duration:** ' + (formatDuration(v.duration) || '—') + '\n' +
+          '👀 **Views:** ' + formatViews(v.views) + '\n' +
+          '📅 **Added:** ' + formatDateRel(v.created_at) + '\n\n' +
+          '📝 **Description:**\n' + (v.description || 'No description') + '\n\n' +
+          'Please let me know how to proceed with payment.';
+        var enc = encodeURIComponent(msg);
+        if (tgUser) return 'https://t.me/' + tgUser + '?text=' + enc;
+        return 'https://t.me/share/url?url=&text=' + enc;
+      }
+
+      function tgUrlForPromo(tgUser) {
+        var msg =
+          'Hi! I want the special offer: All Content for $100.\n\n' +
+          'Please guide me through payment and instant delivery.';
+        var enc = encodeURIComponent(msg);
+        if (tgUser) return 'https://t.me/' + tgUser + '?text=' + enc;
+        return 'https://t.me/share/url?url=&text=' + enc;
+      }
+
+      function setErr(t) {
+        var el = document.getElementById('err-banner');
+        el.textContent = t || '';
+        el.hidden = !t;
+      }
+
+      function paidProductsForToast() {
+        return allVideos.filter(function (v) {
+          return !v.is_free && Number(v.price) > 0 && (v.title || '').trim();
+        });
+      }
+
+      function pickRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      function buildPurchaseNotice() {
+        var pool = paidProductsForToast();
+        if (!pool.length) return null;
+        var v = pickRandom(pool);
+        if (!v) return null;
+        return {
+          title: String(v.title || 'Premium access').trim(),
+          price: Number(v.price) || 0
+        };
+      }
+
+      function showPurchaseToast() {
+        var notice = buildPurchaseNotice();
+        if (!notice) return;
+        var el = document.getElementById('purchase-toast');
+        if (!el) return;
+        el.querySelector('.purchase-toast-who').textContent = 'Someone purchased';
+        el.querySelector('.purchase-toast-msg').innerHTML =
+          ' <span>' + escapeHtml(notice.title) + '</span> · <em>$' + notice.price.toFixed(2) + '</em>';
+        el.hidden = false;
+        el.classList.remove('hide');
+        el.classList.add('show');
+        clearTimeout(showPurchaseToast._hideT);
+        showPurchaseToast._hideT = setTimeout(function () {
+          el.classList.add('hide');
+          setTimeout(function () {
+            el.hidden = true;
+            el.classList.remove('show', 'hide');
+          }, 450);
+        }, 6500);
+      }
+
+      function startPurchaseToasts() {
+        if (purchaseToastTimer) clearInterval(purchaseToastTimer);
+        if (!paidProductsForToast().length) return;
+        setTimeout(showPurchaseToast, 3500 + Math.floor(Math.random() * 2500));
+        purchaseToastTimer = setInterval(showPurchaseToast, PURCHASE_TOAST_MS);
+      }
+
+      function wireOnlineChip() {
+        var n = 40 + Math.floor(Math.random() * 80);
+        var el = document.getElementById('chip-online');
+        if (!el) return;
+        function tick() {
+          el.textContent = '● ' + n + ' BUYING NOW';
+          n = Math.max(12, n + (Math.random() > 0.5 ? 1 : -1));
+        }
+        tick();
+        setInterval(tick, 4000);
+      }
+
+      function parseUrlParams() {
+        var p = new URLSearchParams(window.location.search);
+        if (p.get('payment_canceled') === 'true') {
+          var b = document.getElementById('pay-cancel');
+          b.hidden = false;
+          setTimeout(function () {
+            b.hidden = true;
+            p.delete('payment_canceled');
+            var qs = p.toString();
+            history.replaceState({}, '', window.location.pathname + (qs ? '?' + qs : ''));
+          }, 8000);
+        }
+      }
+
+      var allVideos = [];
+      var tgUser = TG_ENV; /* overwritten by /api/site-brief (Supabase) when available */
+      var payTarget = null;
+      var payCryptoWallets = [];
+
+      function copyToClipboard(text, btn) {
+        text = String(text || '');
+        if (btn && !btn.getAttribute('data-label')) {
+          btn.setAttribute('data-label', (btn.textContent || 'Copy').trim());
+        }
+        function done(ok) {
+          if (!btn) return;
+          btn.textContent = ok ? 'Copied' : 'Copy failed';
+          setTimeout(function () {
+            btn.textContent = btn.getAttribute('data-label') || 'Copy';
+          }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+          return;
+        }
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done(true);
+        } catch (e) {
+          done(false);
+        }
+      }
+
+      function tgUrlCryptoProof(v, tgUser, wallets) {
+        var lines = (wallets || []).map(function (w) {
+          return '• ' + String(w.label || w.symbol || 'Wallet').toUpperCase() + ': ' + String(w.address || '');
+        }).join('\n');
+        var msg =
+          'Crypto $' + Number(v.price).toFixed(2) + ' — ' + v.title + '\n' +
+          lines + '\n' +
+          'TX hash:';
+        var enc = encodeURIComponent(msg);
+        if (tgUser) return 'https://t.me/' + tgUser + '?text=' + enc;
+        return 'https://t.me/share/url?url=&text=' + enc;
+      }
+
+      function filterList(q) {
+        q = String(q || '').trim().toLowerCase();
+        if (!q) return allVideos;
+        return allVideos.filter(function (v) {
+          return (v.title || '').toLowerCase().indexOf(q) >= 0 ||
+            (v.description || '').toLowerCase().indexOf(q) >= 0;
+        });
+      }
+
+      function renderGrid(list, isPlaceholder) {
+        var g = document.getElementById('grid');
+        g.innerHTML = '';
+        list.forEach(function (v) {
+          var el = document.createElement('article');
+          var isFree = !isPlaceholder && !!v.is_free;
+          el.className = 'vcard' + (isPlaceholder ? ' ph-card' : '') + (isFree ? ' vcard-ph-free' : '');
+          el.dataset.id = v.id;
+          if (isPlaceholder) {
+            el.innerHTML =
+              '<div class="vcard-media"><div class="vcard-media-inner"><div class="skel"></div></div></div>' +
+              '<div class="vcard-body"><div class="vcard-title">' + escapeHtml(v.title) + '</div><div class="vcard-meta"><span>Loading…</span></div></div>';
+            g.appendChild(el);
+            return;
+          }
+
+          var price = Number(v.price) || 0;
+          isFree = !!v.is_free;
+          var dur = formatDuration(v.duration);
+          var previewHref = watchPageUrl(v.id);
+          var svgEye =
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+          var svgCal =
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+          var trustLine = isFree
+            ? '<span class="vcard-trust-item">No payment</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">Instant access</span>'
+            : '<span class="vcard-trust-item">Secure checkout</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">Digital delivery</span>';
+          var metaDate = escapeHtml(formatDateRel(v.created_at)) || '—';
+          var badgeTop = isFree
+            ? '<span class="badge-price">Free</span>'
+            : '<span class="badge-price"><em>$</em>' + price.toFixed(2) + '</span>';
+          /** Only DB-hosted HTTPS thumbnails; Wasabi paths use signed URLs (private buckets break on plain path URLs). */
+          var httpPoster = '';
+          if (v.thumbnail_url && /^https?:\/\//i.test(String(v.thumbnail_url).trim())) {
+            httpPoster = String(v.thumbnail_url).trim();
+          }
+
+          el.innerHTML =
+            '<div class="vcard-media">' +
+              '<div class="vcard-media-inner js-inner">' +
+                '<div class="skel js-skel"></div>' +
+                '<img class="js-thumb" alt="" style="display:none" />' +
+                '<div class="grad-over"></div>' +
+                '<a class="preview-hit" href="' + escapeAttr(previewHref) + '"><div class="play-circ"><div class="play-tri"></div></div></a>' +
+                badgeTop +
+                (dur ? '<span class="badge-dur">' + escapeHtml(dur) + '</span>' : '') +
+              '</div>' +
+            '</div>' +
+            '<div class="vcard-body">' +
+              '<div class="vcard-title">' + escapeHtml(v.title) + '</div>' +
+              '<div class="vcard-trust">' + trustLine + '</div>' +
+              '<div class="vcard-meta">' +
+                '<span class="vcard-meta-item">' + svgEye + formatViews(v.views) + '</span>' +
+                '<span class="vcard-meta-item" style="justify-content:flex-end;text-align:right">' + svgCal + metaDate + '</span>' +
+              '</div>' +
+              '<div class="btn-row">' +
+                '<a class="btn btn-primary" href="' + escapeAttr(previewHref) + '" onclick="event.stopPropagation()">Preview</a>' +
+                '<button type="button" class="btn js-details">View details</button>' +
+                (isFree && v.product_link
+                  ? '<a class="btn btn-primary" href="' + escapeAttr(v.product_link) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open product</a>'
+                  : (!isFree
+                    ? '<div style="display:flex;gap:0.4rem">' +
+                        '<a class="btn" style="flex:1" href="' + escapeAttr(tgUrlForVideo(v, tgUser) || '#') + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Contact</a>' +
+                        '<button type="button" class="btn btn-primary js-payopen" style="flex:1">Buy now</button>' +
+                      '</div>'
+                    : '')) +
+              '</div>' +
+              (!isFree
+                ? '<div class="price-row">' +
+                    '<span class="price-row-label">Total</span>' +
+                    '<span class="price-row-amt">$' + price.toFixed(2) + '<small>USD</small></span>' +
+                  '</div>'
+                : '') +
+            '</div>';
+
+          el.dataset.httpPoster = httpPoster;
+          el.dataset.thumbKey = v.wasabi_thumb_key || '';
+
+          el.setAttribute('aria-label', (v.title || 'Catalog item') + (isFree ? ', free' : ', ' + price.toFixed(2) + ' USD'));
+
+          el.addEventListener('click', function (e) {
+            if (e.target.closest('a, button, video')) return;
+            fetch('/api/videos/' + v.id + '/views', { method: 'POST' }).catch(function () {});
+          });
+
+          el.querySelector('.js-details').addEventListener('click', function (e) {
+            e.stopPropagation();
+            openDetails(v);
+          });
+          var po = el.querySelector('.js-payopen');
+          if (po) po.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openPay(v);
+          });
+
+          g.appendChild(el);
+        });
+
+        if (!isPlaceholder) hydrateThumbs();
+      }
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+      }
+      function escapeAttr(s) { return escapeHtml(s).replace(/'/g, '&#39;'); }
+
+      function hydrateThumbs() {
+        document.querySelectorAll('.vcard:not(.ph-card)').forEach(function (card) {
+          var skel = card.querySelector('.js-skel');
+          var img = card.querySelector('.js-thumb');
+          var http = card.dataset.httpPoster;
+          function trySignedThumb() {
+            var k = card.dataset.thumbKey;
+            if (!k) {
+              skel.style.display = 'none';
+              return;
+            }
+            fetchSigned(k).then(function (u) {
+              if (!u) {
+                skel.style.display = 'none';
+                return;
+              }
+              img.onload = function () { skel.style.display = 'none'; img.style.display = 'block'; };
+              img.onerror = function () { skel.style.display = 'none'; };
+              img.src = u;
+            });
+          }
+          if (http) {
+            img.onload = function () { skel.style.display = 'none'; img.style.display = 'block'; };
+            img.onerror = function () { trySignedThumb(); };
+            img.src = http;
+            return;
+          }
+          trySignedThumb();
+        });
+      }
+
+      function syncModalBodyClass() {
+        var d1 = document.getElementById('dlg-details');
+        var d2 = document.getElementById('dlg-pay');
+        var open = (d1 && d1.open) || (d2 && d2.open);
+        document.body.classList.toggle('modal-dlg-open', !!open);
+      }
+
+      function openDetails(v) {
+        var d = document.getElementById('dlg-details');
+        document.body.classList.add('modal-dlg-open');
+        document.getElementById('dlg-d-title').textContent = v.title;
+        document.getElementById('dlg-d-body').innerHTML =
+          '<p style="margin-bottom:0.75rem;line-height:1.55;color:#dcd8e0">' + escapeHtml(v.description || 'No description available') + '</p>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.75rem">' +
+          '<span class="chip">' + escapeHtml('Views: ' + formatViews(v.views)) + '</span>' +
+          '<span class="chip">' + escapeHtml('Added: ' + formatDateRel(v.created_at)) + '</span>' +
+          (v.duration ? '<span class="chip">' + escapeHtml('Duration: ' + formatDuration(v.duration)) + '</span>' : '') +
+          '</div>' +
+          (!v.is_free
+            ? '<div class="price-row" style="border-top:none;padding-top:0;margin-top:0;margin-bottom:0.75rem">' +
+              '<span class="price-row-label">Price</span>' +
+              '<span class="price-row-amt">$' + Number(v.price).toFixed(2) + '<small>USD</small></span>' +
+              '</div>'
+            : '') +
+          '<p style="font-size:0.72rem;color:#888;margin-bottom:0.65rem;line-height:1.45">' +
+          'Payments use industry-standard processors. Charges appear under a neutral descriptor on your statement.</p>' +
+          '<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">' +
+          '<a class="btn btn-primary" href="' + escapeAttr(watchPageUrl(v.id)) + '">Watch &amp; pay</a>' +
+          '<a class="btn" href="' + escapeAttr(tgUrlForVideo(v, tgUser) || '#') + '" target="_blank">Contact</a>' +
+          (!v.is_free ? '<button type="button" class="btn js-dpay">Checkout here</button>' : '') +
+          '</div>';
+        var bp = d.querySelector('.js-dpay');
+        if (bp) bp.addEventListener('click', function () { d.close(); openPay(v); });
+        d.showModal();
+        syncModalBodyClass();
+      }
+
+      function openPay(v) {
+        payTarget = v;
+        document.body.classList.add('modal-dlg-open');
+        var sum = document.getElementById('dlg-pay-summary');
+        sum.innerHTML =
+          '<div class="pay-summary-title">' + escapeHtml(v.title) + '</div>' +
+          '<div class="pay-summary-price">$' + Number(v.price).toFixed(2) + '<small>USD</small></div>';
+
+        var sec = document.getElementById('dlg-pay-crypto-section');
+        var list = document.getElementById('dlg-pay-crypto-list');
+        var tgL = document.getElementById('dlg-pay-crypto-tg');
+
+        if (payCryptoWallets.length) {
+          sec.hidden = false;
+          list.innerHTML = payCryptoWallets
+            .map(function (w) {
+              return (
+                '<div class="crypto-row">' +
+                '<div class="crypto-row-head">' +
+                '<span class="crypto-label">' + escapeHtml(w.label || w.symbol || 'Wallet') + '</span>' +
+                '<button type="button" class="btn-copy js-cp" data-addr="' + escapeAttr(w.address) + '">Copy</button>' +
+                '</div>' +
+                '<div class="crypto-addr">' + escapeHtml(w.address) + '</div>' +
+                '</div>'
+              );
+            })
+            .join('');
+          list.onclick = function (e) {
+            var b = e.target.closest('.js-cp');
+            if (!b || !list.contains(b)) return;
+            e.preventDefault();
+            copyToClipboard(b.getAttribute('data-addr'), b);
+          };
+          tgL.href = tgUrlCryptoProof(v, tgUser, payCryptoWallets);
+        } else {
+          sec.hidden = true;
+          list.innerHTML = '';
+          list.onclick = null;
+          tgL.href = '#';
+        }
+
+        document.getElementById('dlg-pay').showModal();
+        syncModalBodyClass();
+      }
+
+      document.getElementById('dlg-details').addEventListener('close', syncModalBodyClass);
+      document.getElementById('dlg-pay').addEventListener('close', syncModalBodyClass);
+
+      document.querySelector('#dlg-details .dlg-x').addEventListener('click', function () {
+        document.getElementById('dlg-details').close();
+      });
+      document.querySelector('#dlg-pay .dlg-x').addEventListener('click', function () {
+        document.getElementById('dlg-pay').close();
+      });
+
+      function startCheckout(method) {
+        if (!payTarget) return;
+        var masked = MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var u = checkoutUrl(payTarget.price, masked, payTarget.title, payTarget.id, method);
+        if (u) window.location.href = u;
+        else setErr('Set EBOOKS_SITE_URL so success redirects to the delivery site (Telegram).');
+      }
+
+      document.getElementById('btn-paypp').addEventListener('click', function () {
+        startCheckout('paypal');
+      });
+
+      document.getElementById('search').addEventListener('input', function () {
+        renderGrid(filterList(this.value), false);
+      });
+
+      async function boot() {
+        parseUrlParams();
+        wireOnlineChip();
+        EBOOKS_ORIGIN = normalizeOrigin(EBOOKS_ORIGIN || '');
+        var hints = [];
+        if (!EBOOKS_ORIGIN) {
+          hints.push('Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL for checkout redirects.');
+        }
+        try {
+          var hc = await fetch('/api/health').then(function (x) { return x.json(); });
+          if (!hc.wasabi_signed_urls) {
+            hints.push(
+              'Wasabi signing is off: set VITE_WASABI_ACCESS_KEY + VITE_WASABI_SECRET_KEY + VITE_WASABI_BUCKET + VITE_WASABI_REGION + VITE_WASABI_ENDPOINT on this service, or store wasabi_config in Supabase site_config.'
+            );
+          }
+        } catch (e2) {}
+        if (hints.length) setErr(hints.join(' '));
+
+        try {
+          var br = await fetch('/api/site-brief').then(function (r) { return r.json(); });
+          if (br.video_list_title) {
+            document.getElementById('grid-heading').textContent = br.video_list_title;
+          }
+          if (br.telegram_username) tgUser = br.telegram_username.replace(/^@/, '');
+          if (Array.isArray(br.crypto_wallets)) payCryptoWallets = br.crypto_wallets;
+        } catch (e) {}
+
+        var nav = document.getElementById('nav-tg');
+        if (tgUser) nav.href = 'https://t.me/' + tgUser;
+        else { nav.href = '#'; nav.style.opacity = '0.4'; }
+        var promoTg = document.getElementById('promo-tg');
+        if (promoTg) {
+          if (tgUser) promoTg.href = tgUrlForPromo(tgUser);
+          else { promoTg.href = '#'; promoTg.style.opacity = '0.4'; }
+        }
+        var promoPay = document.getElementById('promo-pay');
+        if (promoPay) {
+          promoPay.addEventListener('click', function () {
+            var masked = MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+            var u = checkoutUrl(100, masked, 'VIP Access - Full Collection', 'all-content-offer', 'paypal');
+            if (u) window.location.href = u;
+            else setErr('Set EBOOKS_SITE_URL so checkout can redirect correctly.');
+          });
+        }
+
+        var idsRes = await fetch('/api/video-ids');
+        var idsJs = idsRes.ok ? await idsRes.json() : { ids: [] };
+        var ids = shuffle(idsJs.ids || []);
+        if (ids.length) {
+          renderGrid(ids.map(function (id) { return { id: id, title: id }; }), true);
+        }
+
+        document.getElementById('hydrate-chip').hidden = false;
+        var vidRes = await fetch('/api/videos');
+        document.getElementById('hydrate-chip').hidden = true;
+        if (!vidRes.ok) {
+          var er = await vidRes.json().catch(function () { return {}; });
+          setErr(er.error || 'Failed to load videos');
+          return;
+        }
+        var pack = await vidRes.json();
+        allVideos = orderVideosForGrid(pack.videos || []);
+        renderGrid(allVideos, false);
+        startPurchaseToasts();
+      }
+
+      boot().catch(function (e) {
+        setErr((e && e.message) || 'Catalog failed to load');
+        document.getElementById('hydrate-chip').hidden = true;
+      });
+    })();
+  </script>
+</body>
+</html>

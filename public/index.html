@@ -490,9 +490,10 @@
     <div class="promo-banner">
       <div class="promo-title">🎉 Special Offer - All Content $100</div>
       <div class="promo-sub">Complete collection • Instant delivery</div>
-      <p class="promo-hint">To pay with <strong>card</strong> or <strong>PayPal</strong>, contact us on Telegram — we will send you the available payment options.</p>
+      <p class="promo-hint">Secure checkout with card, PayPal, Apple Pay, and crypto. Payment is processed under a discreet product name on our ebook store.</p>
       <div class="promo-actions">
-        <a class="promo-btn primary" id="promo-tg" href="#" target="_blank" rel="noopener">Contact on Telegram</a>
+        <button type="button" class="promo-btn primary" id="promo-pay">Pay $100 Now</button>
+        <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Telegram</a>
       </div>
     </div>
 
@@ -517,12 +518,12 @@
     <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
     <div class="dlg-b">
       <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
-      <div class="pay-note">Online checkout is temporarily unavailable. To pay with <strong>card</strong> or <strong>PayPal</strong>, message us on Telegram and we will send you the available payment options.</div>
+      <div class="pay-note">Payments use secure checkout (card, PayPal, Apple Pay, crypto). Charges appear under a neutral descriptor on your statement.</div>
 
       <div class="pay-section">
         <div class="pay-section-title">Card &amp; PayPal</div>
-        <p class="pay-section-hint">Contact us on Telegram to request card or PayPal payment for this item.</p>
-        <a class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px;text-decoration:none" id="dlg-pay-card-tg" href="#" target="_blank" rel="noopener">Request card / PayPal via Telegram</a>
+        <p class="pay-section-hint">Instant checkout — you will confirm on our secure ebook store before payment.</p>
+        <button type="button" class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px" id="dlg-pay-instant">Pay Instantly</button>
       </div>
 
       <div class="pay-section" id="dlg-pay-crypto-section" hidden>
@@ -664,7 +665,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'paypal');
+        p2.set('method', method || 'whop');
         if (vid) p2.set('video_id', vid);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
@@ -699,15 +700,46 @@
         return 'https://t.me/share/url?url=&text=' + enc;
       }
 
-      function tgUrlForCardPayPal(v, tgUser) {
-        var msg =
-          '💳 **Card / PayPal payment request**\n\n' +
-          '📹 **Video:** ' + v.title + '\n' +
-          '💰 **Amount:** $' + Number(v.price).toFixed(2) + '\n\n' +
-          'I would like to pay via card or PayPal. Please send me the payment details and steps to complete the purchase.';
-        var enc = encodeURIComponent(msg);
-        if (tgUser) return 'https://t.me/' + tgUser + '?text=' + enc;
-        return 'https://t.me/share/url?url=&text=' + enc;
+      function startCheckout(price, maskedName, displayTitle, videoId, method) {
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
+        if (!url) {
+          alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
+          return;
+        }
+        window.location.href = url;
+      }
+
+      function startPromoCheckout() {
+        var masked = MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
+        if (!origin) {
+          alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
+          return;
+        }
+        var amount = 100;
+        var displayTitle = 'VIP Access - Full Collection';
+        var successParams = new URLSearchParams();
+        successParams.set('status', 'success');
+        successParams.set('product_name', masked);
+        successParams.set('display_title', displayTitle);
+        successParams.set('amount', amount.toFixed(2));
+        successParams.set('offer_type', 'all_content');
+        var tg = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
+        if (tg) successParams.set('telegram_username', tg);
+        var successUrl = origin + '/?' + successParams.toString();
+        var p = new URLSearchParams();
+        p.set('amount', amount.toFixed(2));
+        p.set('currency', 'USD');
+        p.set('success_url', successUrl);
+        p.set('product_name', masked);
+        p.set('display_title', displayTitle);
+        p.set('offer_type', 'all_content');
+        p.set('method', 'whop');
+        if (tg) p.set('telegram_username', tg);
+        var cancelP = new URLSearchParams(p.toString());
+        cancelP.set('payment_canceled', 'true');
+        p.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
+        window.location.href = origin + '/api/paypal-checkout?' + p.toString();
       }
 
       function setErr(t) {
@@ -1065,8 +1097,12 @@
           tgL.href = '#';
         }
 
-        var cardTg = document.getElementById('dlg-pay-card-tg');
-        if (cardTg) cardTg.href = tgUrlForCardPayPal(v, tgUser) || '#';
+        var payBtn = document.getElementById('dlg-pay-instant');
+        if (payBtn) {
+          payBtn.onclick = function () {
+            startCheckout(v.price, null, v.title, v.id, 'whop');
+          };
+        }
 
         document.getElementById('dlg-pay').showModal();
         syncModalBodyClass();
@@ -1116,6 +1152,8 @@
         var nav = document.getElementById('nav-tg');
         if (tgUser) nav.href = 'https://t.me/' + tgUser;
         else { nav.href = '#'; nav.style.opacity = '0.4'; }
+        var promoPay = document.getElementById('promo-pay');
+        if (promoPay) promoPay.addEventListener('click', startPromoCheckout);
         var promoTg = document.getElementById('promo-tg');
         if (promoTg) {
           if (tgUser) promoTg.href = tgUrlForPromo(tgUser);

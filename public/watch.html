@@ -189,11 +189,11 @@
         <h2>Unlock access</h2>
         <p class="pay-price" id="v-price">—</p>
         <p class="pay-note">
-          Online checkout is temporarily unavailable. To pay with <strong>card</strong> or <strong>PayPal</strong>, message us on Telegram and we will send you the available payment options.
+          Secure checkout with card, PayPal, Apple Pay, and crypto. Charges appear under a neutral descriptor on your statement.
         </p>
         <div class="pay-section">
           <p class="pay-section-title">Card &amp; PayPal</p>
-          <a class="btn btn-primary" id="btn-card-tg" href="#" target="_blank" rel="noopener">Request card / PayPal via Telegram</a>
+          <button type="button" class="btn btn-primary" id="btn-pay-instant">Pay Instantly</button>
         </div>
         <div class="pay-section" id="crypto-section" hidden>
           <p class="pay-section-title">Cryptocurrency</p>
@@ -272,7 +272,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'paypal');
+        p2.set('method', method || 'whop');
         if (videoId) p2.set('video_id', videoId);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
@@ -283,14 +283,13 @@
         var enc = encodeURIComponent('🎬 **' + v.title + '**\n\n💰 **Price:** $' + Number(v.price).toFixed(2) + '\n\nPlease let me know how to proceed with payment.');
         return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
       }
-      function tgUrlForCardPayPal(v) {
-        var msg =
-          '💳 **Card / PayPal payment request**\n\n' +
-          '📹 **Video:** ' + v.title + '\n' +
-          '💰 **Amount:** $' + Number(v.price).toFixed(2) + '\n\n' +
-          'I would like to pay via card or PayPal. Please send me the payment details and steps to complete the purchase.';
-        var enc = encodeURIComponent(msg);
-        return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
+      function startCheckout(price, maskedName, displayTitle, videoId, method) {
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
+        if (!url) {
+          alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
+          return;
+        }
+        window.location.href = url;
       }
       function tgUrlCryptoProof(v) {
         var lines = (cryptoWallets || []).map(function (w) { return '• ' + String(w.label || w.symbol || 'Wallet') + ': ' + String(w.address || ''); }).join('\n');
@@ -372,8 +371,12 @@
         }
         document.getElementById('v-price').innerHTML = '$' + Number(v.price).toFixed(2) + '<small>USD</small>';
         document.getElementById('btn-contact-tg').href = tgUrlForVideo(v);
-        var cardTg = document.getElementById('btn-card-tg');
-        if (cardTg) cardTg.href = tgUrlForCardPayPal(v);
+        var payBtn = document.getElementById('btn-pay-instant');
+        if (payBtn) {
+          payBtn.onclick = function () {
+            startCheckout(v.price, null, v.title, v.id, 'whop');
+          };
+        }
         if (cryptoWallets.length) {
           document.getElementById('crypto-section').hidden = false;
           document.getElementById('crypto-list').innerHTML = cryptoWallets.map(function (w) {

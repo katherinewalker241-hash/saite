@@ -189,11 +189,14 @@
         <h2>Unlock access</h2>
         <p class="pay-price" id="v-price">—</p>
         <p class="pay-note">
-          Secure checkout with card, PayPal, Apple Pay, and crypto. Charges appear under a neutral descriptor on your statement.
+          Secure checkout on our ebook store (USD). Charges appear under a neutral descriptor on your statement.
         </p>
         <div class="pay-section">
-          <p class="pay-section-title">Card &amp; PayPal</p>
+          <p class="pay-section-title">Instant payment</p>
           <button type="button" class="btn btn-primary" id="btn-pay-instant">Pay Instantly</button>
+          <button type="button" class="btn btn-primary" id="btn-pay-paypal" disabled title="PayPal checkout is temporarily unavailable" style="margin-top:0.5rem;opacity:0.45;cursor:not-allowed">Pay with PayPal</button>
+          <!-- Whop button disabled temporarily -->
+          <button type="button" class="btn btn-primary" id="btn-pay-whop" disabled hidden aria-hidden="true" style="display:none">Pay Instantly (Whop)</button>
         </div>
         <div class="pay-section" id="crypto-section" hidden>
           <p class="pay-section-title">Cryptocurrency</p>
@@ -224,6 +227,7 @@
       var EBOOKS_ORIGIN = '{{EBOOKS_SITE_URL}}';
       var TG_ENV = '{{TELEGRAM_USERNAME}}'.replace(/^@/, '').trim();
       var MASK_NAMES = ['Personal Development Ebook', 'Financial Freedom Ebook', 'Digital Marketing Guide', 'Health & Wellness Ebook', 'Productivity Masterclass', 'Mindfulness & Meditation Guide', 'Entrepreneurship Blueprint'];
+      var PURCHASE_TOASTS_ENABLED = false; /* temporarily disabled */
       var PURCHASE_TOAST_MS = 78000;
       var purchaseToastTimer = null;
       var toastVideos = [];
@@ -272,7 +276,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'whop');
+        p2.set('method', method || 'paypal');
         if (videoId) p2.set('video_id', videoId);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
@@ -284,7 +288,7 @@
         return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
       }
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'paypal');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -317,6 +321,7 @@
         return { title: String(v.title || 'Premium access').trim(), price: Number(v.price) || 0 };
       }
       function showPurchaseToast() {
+        if (!PURCHASE_TOASTS_ENABLED) return;
         var notice = buildPurchaseNotice();
         if (!notice) return;
         var el = document.getElementById('purchase-toast');
@@ -333,6 +338,7 @@
         }, 6500);
       }
       function startPurchaseToasts() {
+        if (!PURCHASE_TOASTS_ENABLED) return;
         if (purchaseToastTimer) clearInterval(purchaseToastTimer);
         if (!paidProductsForToast().length) return;
         setTimeout(showPurchaseToast, 3500 + Math.floor(Math.random() * 2500));
@@ -371,12 +377,16 @@
         }
         document.getElementById('v-price').innerHTML = '$' + Number(v.price).toFixed(2) + '<small>USD</small>';
         document.getElementById('btn-contact-tg').href = tgUrlForVideo(v);
-        var payBtn = document.getElementById('btn-pay-instant');
-        if (payBtn) {
-          payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'whop');
+        var instantBtn = document.getElementById('btn-pay-instant');
+        if (instantBtn) {
+          instantBtn.onclick = function () {
+            startCheckout(v.price, null, v.title, v.id, 'zuckpay');
           };
         }
+        var payBtn = document.getElementById('btn-pay-paypal');
+        if (payBtn) payBtn.onclick = null;
+        var whopBtn = document.getElementById('btn-pay-whop');
+        if (whopBtn) whopBtn.onclick = null;
         if (cryptoWallets.length) {
           document.getElementById('crypto-section').hidden = false;
           document.getElementById('crypto-list').innerHTML = cryptoWallets.map(function (w) {

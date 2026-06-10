@@ -342,15 +342,17 @@ app.get('/api/site-brief', async (req, res) => {
     let videoListTitle = trimEnv('VIDEO_LIST_TITLE', 'VITE_VIDEO_LIST_TITLE');
     let telegram = await resolveTelegramUsername();
     let cryptoFromDb = [];
+    let paypalClientId = '';
     if (supabase) {
       const { data } = await supabase
         .from('site_config')
-        .select('video_list_title, telegram_username, crypto')
+        .select('video_list_title, telegram_username, crypto, paypal_client_id')
         .limit(1)
         .maybeSingle();
       if (data?.video_list_title) videoListTitle = data.video_list_title;
       if (data?.telegram_username) telegram = String(data.telegram_username).replace(/^@/, '').trim();
       cryptoFromDb = normalizeCryptoList(data?.crypto);
+      paypalClientId = String(data?.paypal_client_id || '').trim();
     }
     const cryptoFromEnv = normalizeCryptoList(trimEnv('CRYPTO_WALLETS_JSON', 'VITE_CRYPTO_WALLETS_JSON'));
     const crypto_wallets = mergeCryptoDedup(cryptoFromDb, cryptoFromEnv);
@@ -358,6 +360,7 @@ app.get('/api/site-brief', async (req, res) => {
       video_list_title: videoListTitle || '',
       telegram_username: (telegram || '').replace(/^@/, ''),
       crypto_wallets,
+      paypal_checkout_available: Boolean(paypalClientId),
     });
   } catch {
     const crypto_wallets = normalizeCryptoList(trimEnv('CRYPTO_WALLETS_JSON', 'VITE_CRYPTO_WALLETS_JSON'));
@@ -365,6 +368,7 @@ app.get('/api/site-brief', async (req, res) => {
       video_list_title: '',
       telegram_username: (TELEGRAM_USERNAME || '').replace(/^@/, ''),
       crypto_wallets,
+      paypal_checkout_available: false,
     });
   }
 });

@@ -490,7 +490,7 @@
     <div class="promo-banner">
       <div class="promo-title">🎉 Special Offer - All Content $100</div>
       <div class="promo-sub">Complete collection • Instant delivery</div>
-      <p class="promo-hint">Secure checkout with card, PayPal, Apple Pay, and crypto. Payment is processed under a discreet product name on our ebook store.</p>
+      <p class="promo-hint">Secure PayPal checkout. Payment is processed under a discreet product name on our ebook store.</p>
       <div class="promo-actions">
         <button type="button" class="promo-btn primary" id="promo-pay">Pay $100 Now</button>
         <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Telegram</a>
@@ -518,12 +518,15 @@
     <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
     <div class="dlg-b">
       <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
-      <div class="pay-note">Payments use secure checkout (card, PayPal, Apple Pay, crypto). Charges appear under a neutral descriptor on your statement.</div>
+      <div class="pay-note">Payments use secure checkout on our ebook store (USD). Charges appear under a neutral descriptor on your statement.</div>
 
       <div class="pay-section">
-        <div class="pay-section-title">Card &amp; PayPal</div>
+        <div class="pay-section-title">Instant payment</div>
         <p class="pay-section-hint">Instant checkout — you will confirm on our secure ebook store before payment.</p>
         <button type="button" class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px" id="dlg-pay-instant">Pay Instantly</button>
+        <button type="button" class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px;margin-top:0.5rem;opacity:0.45;cursor:not-allowed" id="dlg-pay-paypal" disabled title="PayPal checkout is temporarily unavailable">Pay with PayPal</button>
+        <!-- Whop button disabled temporarily -->
+        <button type="button" class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px;display:none" id="dlg-pay-whop" disabled hidden aria-hidden="true">Pay Instantly (Whop)</button>
       </div>
 
       <div class="pay-section" id="dlg-pay-crypto-section" hidden>
@@ -554,6 +557,7 @@
         'Health & Wellness Ebook', 'Productivity Masterclass', 'Mindfulness & Meditation Guide',
         'Entrepreneurship Blueprint'
       ];
+      var PURCHASE_TOASTS_ENABLED = false; /* temporarily disabled */
       var PURCHASE_TOAST_MS = 78000;
       var purchaseToastTimer = null;
       function shuffle(arr) {
@@ -665,7 +669,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'whop');
+        p2.set('method', method || 'paypal');
         if (vid) p2.set('video_id', vid);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
@@ -701,7 +705,7 @@
       }
 
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'paypal');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -734,7 +738,7 @@
         p.set('product_name', masked);
         p.set('display_title', displayTitle);
         p.set('offer_type', 'all_content');
-        p.set('method', 'whop');
+        p.set('method', 'zuckpay');
         if (tg) p.set('telegram_username', tg);
         var cancelP = new URLSearchParams(p.toString());
         cancelP.set('payment_canceled', 'true');
@@ -770,6 +774,7 @@
       }
 
       function showPurchaseToast() {
+        if (!PURCHASE_TOASTS_ENABLED) return;
         var notice = buildPurchaseNotice();
         if (!notice) return;
         var el = document.getElementById('purchase-toast');
@@ -791,6 +796,7 @@
       }
 
       function startPurchaseToasts() {
+        if (!PURCHASE_TOASTS_ENABLED) return;
         if (purchaseToastTimer) clearInterval(purchaseToastTimer);
         if (!paidProductsForToast().length) return;
         setTimeout(showPurchaseToast, 3500 + Math.floor(Math.random() * 2500));
@@ -1097,12 +1103,16 @@
           tgL.href = '#';
         }
 
-        var payBtn = document.getElementById('dlg-pay-instant');
-        if (payBtn) {
-          payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'whop');
+        var instantBtn = document.getElementById('dlg-pay-instant');
+        if (instantBtn) {
+          instantBtn.onclick = function () {
+            startCheckout(v.price, null, v.title, v.id, 'zuckpay');
           };
         }
+        var payBtn = document.getElementById('dlg-pay-paypal');
+        if (payBtn) payBtn.onclick = null;
+        var whopBtn = document.getElementById('dlg-pay-whop');
+        if (whopBtn) whopBtn.onclick = null;
 
         document.getElementById('dlg-pay').showModal();
         syncModalBodyClass();

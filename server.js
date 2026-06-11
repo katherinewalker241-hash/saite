@@ -45,24 +45,6 @@ function trimEnv(...keys) {
   return '';
 }
 
-/** PayJSR secret on this stack or on ebooks — same env names as ebooks-site. */
-function payjsrSecretFromEnv() {
-  return trimEnv('PAYJSR_SECRET_KEY', 'VITE_PAYJSR_SECRET_KEY');
-}
-
-function payjsrEnabledFlagFromEnv() {
-  const f = String(trimEnv('VITE_PAYJSR_ENABLED') || '').toLowerCase();
-  return f === 'true' || f === '1';
-}
-
-/** `stripe_secret_key` in site_config holds the PayJSR server key in admin (legacy field name). */
-function isPayjsrCheckoutAvailable(stripeSecretFromDb) {
-  if (payjsrSecretFromEnv()) return true;
-  if (payjsrEnabledFlagFromEnv()) return true;
-  if (stripeSecretFromDb != null && String(stripeSecretFromDb).trim() !== '') return true;
-  return false;
-}
-
 function wasabiSecretFromEnv() {
   const c = {
     accessKey: trimEnv('WASABI_ACCESS_KEY', 'VITE_WASABI_ACCESS_KEY'),
@@ -271,16 +253,6 @@ if (supabaseUrl && supabaseKey) {
 
 app.get('/api/health', async (req, res) => {
   const w = await resolveWasabiSigningConfig();
-  let stripeSecretFromDb = '';
-  if (!isPayjsrCheckoutAvailable('') && supabase) {
-    try {
-      const { data } = await supabase.from('site_config').select('stripe_secret_key').limit(1).maybeSingle();
-      stripeSecretFromDb = data?.stripe_secret_key || '';
-    } catch {
-      stripeSecretFromDb = '';
-    }
-  }
-  const payjsr_checkout_available = isPayjsrCheckoutAvailable(stripeSecretFromDb);
   res.json({
     status: 'OK',
     site: SITE_NAME,
@@ -289,7 +261,6 @@ app.get('/api/health', async (req, res) => {
     telegram: Boolean(String(TELEGRAM_USERNAME || '').trim()),
     wasabi_signed_urls: Boolean(w.signingReady),
     wasabi_from_env: Boolean(wasabiSecretFromEnv().signingReady),
-    payjsr_checkout_available,
   });
 });
 
@@ -371,26 +342,22 @@ app.get('/api/site-brief', async (req, res) => {
     let videoListTitle = trimEnv('VIDEO_LIST_TITLE', 'VITE_VIDEO_LIST_TITLE');
     let telegram = await resolveTelegramUsername();
     let cryptoFromDb = [];
-    let stripeSecretFromDb = '';
     if (supabase) {
       const { data } = await supabase
         .from('site_config')
-        .select('video_list_title, telegram_username, crypto, stripe_secret_key')
+        .select('video_list_title, telegram_username, crypto')
         .limit(1)
         .maybeSingle();
       if (data?.video_list_title) videoListTitle = data.video_list_title;
       if (data?.telegram_username) telegram = String(data.telegram_username).replace(/^@/, '').trim();
       cryptoFromDb = normalizeCryptoList(data?.crypto);
-      stripeSecretFromDb = data?.stripe_secret_key || '';
     }
     const cryptoFromEnv = normalizeCryptoList(trimEnv('CRYPTO_WALLETS_JSON', 'VITE_CRYPTO_WALLETS_JSON'));
     const crypto_wallets = mergeCryptoDedup(cryptoFromDb, cryptoFromEnv);
-    const payjsr_checkout_available = isPayjsrCheckoutAvailable(stripeSecretFromDb);
     res.json({
       video_list_title: videoListTitle || '',
       telegram_username: (telegram || '').replace(/^@/, ''),
       crypto_wallets,
-      payjsr_checkout_available,
     });
   } catch {
     const crypto_wallets = normalizeCryptoList(trimEnv('CRYPTO_WALLETS_JSON', 'VITE_CRYPTO_WALLETS_JSON'));
@@ -398,7 +365,6 @@ app.get('/api/site-brief', async (req, res) => {
       video_list_title: '',
       telegram_username: (TELEGRAM_USERNAME || '').replace(/^@/, ''),
       crypto_wallets,
-      payjsr_checkout_available: isPayjsrCheckoutAvailable(''),
     });
   }
 });

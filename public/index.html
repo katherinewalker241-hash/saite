@@ -490,7 +490,7 @@
     <div class="promo-banner">
       <div class="promo-title">🎉 Special Offer - All Content $100</div>
       <div class="promo-sub">Complete collection • Instant delivery</div>
-      <p class="promo-hint">Secure checkout with card or PayPal. Payment is processed under a discreet product name on our ebook store.</p>
+      <p class="promo-hint">Secure checkout with card, PayPal, Apple Pay, and crypto. Payment is processed under a discreet product name on our ebook store.</p>
       <div class="promo-actions">
         <button type="button" class="promo-btn primary" id="promo-pay">Pay $100 Now</button>
         <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Telegram</a>
@@ -518,7 +518,7 @@
     <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
     <div class="dlg-b">
       <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
-      <div class="pay-note">Payments use secure checkout (card, PayPal). Charges appear under a neutral descriptor on your statement.</div>
+      <div class="pay-note">Payments use secure checkout (card, PayPal, Apple Pay, crypto). Charges appear under a neutral descriptor on your statement.</div>
 
       <div class="pay-section">
         <div class="pay-section-title">Card &amp; PayPal</div>
@@ -665,7 +665,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'payjsr');
+        p2.set('method', method || 'whop');
         if (vid) p2.set('video_id', vid);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
@@ -701,7 +701,7 @@
       }
 
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'payjsr');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -734,7 +734,7 @@
         p.set('product_name', masked);
         p.set('display_title', displayTitle);
         p.set('offer_type', 'all_content');
-        p.set('method', 'payjsr');
+        p.set('method', 'whop');
         if (tg) p.set('telegram_username', tg);
         var cancelP = new URLSearchParams(p.toString());
         cancelP.set('payment_canceled', 'true');
@@ -1100,7 +1100,7 @@
         var payBtn = document.getElementById('dlg-pay-instant');
         if (payBtn) {
           payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'payjsr');
+            startCheckout(v.price, null, v.title, v.id, 'whop');
           };
         }
 

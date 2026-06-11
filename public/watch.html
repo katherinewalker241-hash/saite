@@ -189,7 +189,7 @@
         <h2>Unlock access</h2>
         <p class="pay-price" id="v-price">—</p>
         <p class="pay-note">
-          Secure checkout with card or PayPal. Charges appear under a neutral descriptor on your statement.
+          Secure checkout with card, PayPal, Apple Pay, and crypto. Charges appear under a neutral descriptor on your statement.
         </p>
         <div class="pay-section">
           <p class="pay-section-title">Card &amp; PayPal</p>
@@ -272,7 +272,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'payjsr');
+        p2.set('method', method || 'whop');
         if (videoId) p2.set('video_id', videoId);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
@@ -284,7 +284,7 @@
         return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
       }
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'payjsr');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -374,7 +374,7 @@
         var payBtn = document.getElementById('btn-pay-instant');
         if (payBtn) {
           payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'payjsr');
+            startCheckout(v.price, null, v.title, v.id, 'whop');
           };
         }
         if (cryptoWallets.length) {

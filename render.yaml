@@ -9,6 +9,10 @@ services:
         value: production
       - key: SITE_NAME
         sync: false
+      - key: ZUCKPAY_CLIENT_ID
+        sync: false
+      - key: ZUCKPAY_CLIENT_SECRET
+        sync: false
       - key: EBOOKS_SITE_URL
         sync: false
       - key: SUPABASE_URL

@@ -165,6 +165,7 @@
     </div>
 
     <div id="pay-cancel" class="alert" role="status" hidden>Payment cancelled. No charges were made.</div>
+    <div id="pay-success" class="alert" style="border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.1);color:#a7f3d0" role="status" hidden>Payment successful! Contact us on Telegram to receive access.</div>
     <div id="err-banner" class="alert err" role="alert" hidden></div>
 
     <div id="loading-state" class="state-box">Loading video…</div>
@@ -189,14 +190,11 @@
         <h2>Unlock access</h2>
         <p class="pay-price" id="v-price">—</p>
         <p class="pay-note">
-          Secure checkout on our ebook store (USD). Charges appear under a neutral descriptor on your statement.
+          Secure checkout on this site (USD). Apple Pay appears on supported iPhone, iPad and Mac browsers.
         </p>
         <div class="pay-section">
           <p class="pay-section-title">Instant payment</p>
           <button type="button" class="btn btn-primary" id="btn-pay-instant">Pay Instantly</button>
-          <button type="button" class="btn btn-primary" id="btn-pay-paypal" disabled title="PayPal checkout is temporarily unavailable" style="margin-top:0.5rem;opacity:0.45;cursor:not-allowed">Pay with PayPal</button>
-          <!-- Whop button disabled temporarily -->
-          <button type="button" class="btn btn-primary" id="btn-pay-whop" disabled hidden aria-hidden="true" style="display:none">Pay Instantly (Whop)</button>
         </div>
         <div class="pay-section" id="crypto-section" hidden>
           <p class="pay-section-title">Cryptocurrency</p>
@@ -250,50 +248,24 @@
         var j = await r.json();
         return j.success && j.url ? j.url : null;
       }
-      function ebooksSuccessUrl(price, maskedName, displayTitle, videoId) {
-        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
-        if (!origin) return null;
-        var masked = maskedName || MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
-        var params = new URLSearchParams();
-        params.set('status', 'success');
-        params.set('product_name', masked);
-        if (displayTitle) params.set('display_title', displayTitle);
-        params.set('amount', String(price));
-        if (videoId) params.set('video_id', String(videoId));
-        var tg = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
-        if (tg) params.set('telegram_username', tg);
-        return origin + '/?' + params.toString();
-      }
-      function checkoutUrl(price, maskedName, displayTitle, videoId, method) {
-        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
-        if (!origin) return null;
-        var masked = maskedName || MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
-        var successUrl = ebooksSuccessUrl(price, masked, displayTitle || 'Digital purchase', videoId);
-        if (!successUrl) return null;
-        var p2 = new URLSearchParams();
-        p2.set('amount', String(price));
-        p2.set('currency', 'USD');
-        p2.set('success_url', successUrl);
-        p2.set('product_name', masked);
-        p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'paypal');
-        if (videoId) p2.set('video_id', videoId);
-        var cancelP = new URLSearchParams(p2.toString());
-        cancelP.set('payment_canceled', 'true');
-        p2.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
-        return origin + '/api/paypal-checkout?' + p2.toString();
+      function checkoutUrl(price, title, videoId) {
+        var p = new URLSearchParams();
+        p.set('amount', String(price));
+        p.set('currency', 'USD');
+        p.set('title', title || 'Video access');
+        if (videoId) {
+          p.set('video_id', videoId);
+          p.set('success_url', '/watch?id=' + encodeURIComponent(videoId) + '&status=success&amount=' + encodeURIComponent(String(price)));
+          p.set('cancel_url', '/watch?id=' + encodeURIComponent(videoId) + '&payment_canceled=true');
+        }
+        return '/api/checkout?' + p.toString();
       }
       function tgUrlForVideo(v) {
         var enc = encodeURIComponent('🎬 **' + v.title + '**\n\n💰 **Price:** $' + Number(v.price).toFixed(2) + '\n\nPlease let me know how to proceed with payment.');
         return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
       }
-      function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'paypal');
-        if (!url) {
-          alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
-          return;
-        }
-        window.location.href = url;
+      function startCheckout(price, title, videoId) {
+        window.location.href = checkoutUrl(price, title, videoId);
       }
       function tgUrlCryptoProof(v) {
         var lines = (cryptoWallets || []).map(function (w) { return '• ' + String(w.label || w.symbol || 'Wallet') + ': ' + String(w.address || ''); }).join('\n');
@@ -307,6 +279,10 @@
           var b = document.getElementById('pay-cancel');
           b.hidden = false;
           setTimeout(function () { b.hidden = true; p.delete('payment_canceled'); history.replaceState({}, '', window.location.pathname + (p.toString() ? '?' + p.toString() : '')); }, 8000);
+        }
+        if (p.get('status') === 'success') {
+          var s = document.getElementById('pay-success');
+          if (s) s.hidden = false;
         }
       }
       function escapeHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -380,13 +356,9 @@
         var instantBtn = document.getElementById('btn-pay-instant');
         if (instantBtn) {
           instantBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'zuckpay');
+            startCheckout(v.price, v.title, v.id);
           };
         }
-        var payBtn = document.getElementById('btn-pay-paypal');
-        if (payBtn) payBtn.onclick = null;
-        var whopBtn = document.getElementById('btn-pay-whop');
-        if (whopBtn) whopBtn.onclick = null;
         if (cryptoWallets.length) {
           document.getElementById('crypto-section').hidden = false;
           document.getElementById('crypto-list').innerHTML = cryptoWallets.map(function (w) {
@@ -412,8 +384,6 @@
       }
       async function boot() {
         parseUrlParams();
-        EBOOKS_ORIGIN = normalizeOrigin(EBOOKS_ORIGIN || '');
-        if (!EBOOKS_ORIGIN) setErr('Set EBOOKS_SITE_URL so payments redirect to the delivery site (Telegram).');
         try {
           var br = await fetch('/api/site-brief').then(function (r) { return r.json(); });
           if (br.telegram_username) tgUser = br.telegram_username.replace(/^@/, '');

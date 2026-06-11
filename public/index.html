@@ -490,7 +490,7 @@
     <div class="promo-banner">
       <div class="promo-title">🎉 Special Offer - All Content $100</div>
       <div class="promo-sub">Complete collection • Instant delivery</div>
-      <p class="promo-hint">Secure checkout on this site. Apple Pay on supported devices.</p>
+      <p class="promo-hint">Secure checkout with card or PayPal. Payment is processed under a discreet product name on our ebook store.</p>
       <div class="promo-actions">
         <button type="button" class="promo-btn primary" id="promo-pay">Pay $100 Now</button>
         <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Telegram</a>
@@ -498,7 +498,6 @@
     </div>
 
     <div id="pay-cancel" class="alert" role="status" hidden>Payment cancelled. No charges were made.</div>
-    <div id="pay-success" class="alert" style="border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.1);color:#a7f3d0" role="status" hidden>Payment successful! Contact us on Telegram to receive access.</div>
     <div id="err-banner" class="alert err" role="alert" hidden></div>
 
     <div class="toolbar">
@@ -519,11 +518,11 @@
     <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
     <div class="dlg-b">
       <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
-      <div class="pay-note">Secure checkout on this site (USD). Apple Pay on supported iPhone, iPad and Mac browsers.</div>
+      <div class="pay-note">Payments use secure checkout (card, PayPal). Charges appear under a neutral descriptor on your statement.</div>
 
       <div class="pay-section">
-        <div class="pay-section-title">Instant payment</div>
-        <p class="pay-section-hint">Card, Apple Pay or Google Pay when available.</p>
+        <div class="pay-section-title">Card &amp; PayPal</div>
+        <p class="pay-section-hint">Instant checkout — you will confirm on our secure ebook store before payment.</p>
         <button type="button" class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px" id="dlg-pay-instant">Pay Instantly</button>
       </div>
 
@@ -555,7 +554,6 @@
         'Health & Wellness Ebook', 'Productivity Masterclass', 'Mindfulness & Meditation Guide',
         'Entrepreneurship Blueprint'
       ];
-      var PURCHASE_TOASTS_ENABLED = false; /* temporarily disabled */
       var PURCHASE_TOAST_MS = 78000;
       var purchaseToastTimer = null;
       function shuffle(arr) {
@@ -639,20 +637,40 @@
         return j.success && j.url ? j.url : null;
       }
 
-      function checkoutUrl(price, title, videoId) {
-        var p = new URLSearchParams();
-        p.set('amount', String(price));
-        p.set('currency', 'USD');
-        p.set('title', title || 'Video access');
-        if (videoId) {
-          p.set('video_id', videoId);
-          p.set('success_url', '/watch?id=' + encodeURIComponent(videoId) + '&status=success&amount=' + encodeURIComponent(String(price)));
-          p.set('cancel_url', '/watch?id=' + encodeURIComponent(videoId) + '&payment_canceled=true');
-        } else {
-          p.set('success_url', '/?status=success&amount=' + encodeURIComponent(String(price)) + '&title=' + encodeURIComponent(title || 'Video access'));
-          p.set('cancel_url', '/?payment_canceled=true');
-        }
-        return '/api/checkout?' + p.toString();
+      function ebooksSuccessUrl(price, maskedName, displayTitle, videoId) {
+        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
+        if (!origin) return null;
+        var masked = maskedName || MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var params = new URLSearchParams();
+        params.set('status', 'success');
+        params.set('product_name', masked);
+        if (displayTitle) params.set('display_title', displayTitle);
+        params.set('amount', String(price));
+        if (videoId) params.set('video_id', String(videoId));
+        var tg = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
+        if (tg) params.set('telegram_username', tg);
+        return origin + '/?' + params.toString();
+      }
+
+      function checkoutUrl(price, maskedName, displayTitle, videoId, method) {
+        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
+        if (!origin) return null;
+        var vid = videoId || '';
+        var masked = maskedName || MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var successUrl = ebooksSuccessUrl(price, masked, displayTitle || 'Digital purchase', vid);
+        if (!successUrl) return null;
+        var p2 = new URLSearchParams();
+        p2.set('amount', String(price));
+        p2.set('currency', 'USD');
+        p2.set('success_url', successUrl);
+        p2.set('product_name', masked);
+        p2.set('display_title', displayTitle || 'Digital purchase');
+        p2.set('method', method || 'payjsr');
+        if (vid) p2.set('video_id', vid);
+        var cancelP = new URLSearchParams(p2.toString());
+        cancelP.set('payment_canceled', 'true');
+        p2.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
+        return origin + '/api/paypal-checkout?' + p2.toString();
       }
 
       function watchPageUrl(videoId) {
@@ -682,20 +700,46 @@
         return 'https://t.me/share/url?url=&text=' + enc;
       }
 
-      function startCheckout(price, title, videoId) {
-        window.location.href = checkoutUrl(price, title, videoId);
+      function startCheckout(price, maskedName, displayTitle, videoId, method) {
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'payjsr');
+        if (!url) {
+          alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
+          return;
+        }
+        window.location.href = url;
       }
 
       function startPromoCheckout() {
+        var masked = MASK_NAMES[Math.floor(Math.random() * MASK_NAMES.length)];
+        var origin = normalizeOrigin(String(EBOOKS_ORIGIN || '').trim().replace(/\/+$/, ''));
+        if (!origin) {
+          alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
+          return;
+        }
         var amount = 100;
         var displayTitle = 'VIP Access - Full Collection';
+        var successParams = new URLSearchParams();
+        successParams.set('status', 'success');
+        successParams.set('product_name', masked);
+        successParams.set('display_title', displayTitle);
+        successParams.set('amount', amount.toFixed(2));
+        successParams.set('offer_type', 'all_content');
+        var tg = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
+        if (tg) successParams.set('telegram_username', tg);
+        var successUrl = origin + '/?' + successParams.toString();
         var p = new URLSearchParams();
         p.set('amount', amount.toFixed(2));
         p.set('currency', 'USD');
-        p.set('title', displayTitle);
-        p.set('success_url', '/?status=success&amount=' + amount.toFixed(2) + '&title=' + encodeURIComponent(displayTitle) + '&offer_type=all_content');
-        p.set('cancel_url', '/?payment_canceled=true');
-        window.location.href = '/api/checkout?' + p.toString();
+        p.set('success_url', successUrl);
+        p.set('product_name', masked);
+        p.set('display_title', displayTitle);
+        p.set('offer_type', 'all_content');
+        p.set('method', 'payjsr');
+        if (tg) p.set('telegram_username', tg);
+        var cancelP = new URLSearchParams(p.toString());
+        cancelP.set('payment_canceled', 'true');
+        p.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
+        window.location.href = origin + '/api/paypal-checkout?' + p.toString();
       }
 
       function setErr(t) {
@@ -726,7 +770,6 @@
       }
 
       function showPurchaseToast() {
-        if (!PURCHASE_TOASTS_ENABLED) return;
         var notice = buildPurchaseNotice();
         if (!notice) return;
         var el = document.getElementById('purchase-toast');
@@ -748,7 +791,6 @@
       }
 
       function startPurchaseToasts() {
-        if (!PURCHASE_TOASTS_ENABLED) return;
         if (purchaseToastTimer) clearInterval(purchaseToastTimer);
         if (!paidProductsForToast().length) return;
         setTimeout(showPurchaseToast, 3500 + Math.floor(Math.random() * 2500));
@@ -778,10 +820,6 @@
             var qs = p.toString();
             history.replaceState({}, '', window.location.pathname + (qs ? '?' + qs : ''));
           }, 8000);
-        }
-        if (p.get('status') === 'success') {
-          var s = document.getElementById('pay-success');
-          if (s) s.hidden = false;
         }
       }
 
@@ -1059,10 +1097,10 @@
           tgL.href = '#';
         }
 
-        var instantBtn = document.getElementById('dlg-pay-instant');
-        if (instantBtn) {
-          instantBtn.onclick = function () {
-            startCheckout(v.price, v.title, v.id);
+        var payBtn = document.getElementById('dlg-pay-instant');
+        if (payBtn) {
+          payBtn.onclick = function () {
+            startCheckout(v.price, null, v.title, v.id, 'payjsr');
           };
         }
 
@@ -1087,12 +1125,13 @@
       async function boot() {
         parseUrlParams();
         wireOnlineChip();
+        EBOOKS_ORIGIN = normalizeOrigin(EBOOKS_ORIGIN || '');
         var hints = [];
+        if (!EBOOKS_ORIGIN) {
+          hints.push('Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL for checkout redirects.');
+        }
         try {
           var hc = await fetch('/api/health').then(function (x) { return x.json(); });
-          if (!hc.zuckpay_configured) {
-            hints.push('Set ZUCKPAY_CLIENT_ID and ZUCKPAY_CLIENT_SECRET for checkout.');
-          }
           if (!hc.wasabi_signed_urls) {
             hints.push(
               'Wasabi signing is off: set VITE_WASABI_ACCESS_KEY + VITE_WASABI_SECRET_KEY + VITE_WASABI_BUCKET + VITE_WASABI_REGION + VITE_WASABI_ENDPOINT on this service, or store wasabi_config in Supabase site_config.'

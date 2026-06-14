@@ -8,16 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #e50914;
-      --primary-light: #ff2d55;
-      --primary-deep: #b20710;
-      --accent: #60a5fa;
-      --accent-gold: #fbbf24;
-      --bg: #0b1220;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --stroke: rgba(148, 163, 184, 0.14);
-      --red: #e50914;
+      --primary: #00aff0;
+      --primary-hover: #33c0ff;
+      --primary-light: #33c0ff;
+      --primary-deep: #008ecf;
+      --accent: #00aff0;
+      --accent-gold: #ffd166;
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1e1e1e;
+      --text: #ffffff;
+      --muted: #8e8e8e;
+      --stroke: rgba(255, 255, 255, 0.08);
+      --stroke-hi: rgba(0, 175, 240, 0.5);
+      --danger: #ff4757;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,120 +29,183 @@
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
-      background-image:
-        radial-gradient(ellipse 100% 60% at 50% -20%, rgba(229, 9, 20, 0.16), transparent),
-        radial-gradient(ellipse 50% 40% at 100% 0%, rgba(255, 45, 85, 0.09), transparent);
       color: var(--text);
       min-height: 100vh;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .site-header-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0.85rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.65rem; text-decoration: none; color: var(--text);
+    }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.65rem; color: #fff; flex-shrink: 0;
+    }
+    .brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.02em; }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .badge-18 {
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em;
+      padding: 0.28rem 0.55rem; border-radius: 4px;
+      background: rgba(255, 71, 87, 0.15); color: #ff6b7a;
+      border: 1px solid rgba(255, 71, 87, 0.35);
+    }
+    .badge-secure {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.68rem; font-weight: 600; color: var(--muted);
+    }
+    .nav-link {
+      color: var(--text); font-weight: 600; text-decoration: none; font-size: 0.8rem;
+      padding: 0.45rem 0.9rem; border-radius: 999px;
+      border: 1px solid var(--stroke); background: var(--surface);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .nav-link:hover { border-color: var(--primary); background: rgba(0, 175, 240, 0.08); }
+    .age-strip {
+      background: var(--surface);
+      border-bottom: 1px solid var(--stroke);
+      padding: 0.5rem 1.25rem;
+      text-align: center;
+      font-size: 0.72rem; font-weight: 500; color: var(--muted);
+    }
+    .age-strip strong { color: var(--text); font-weight: 600; }
     .container { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
-      gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+      gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;
     }
     .topbar a {
-      color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.82rem;
+      color: var(--text); font-weight: 600; text-decoration: none; font-size: 0.82rem;
       padding: 0.45rem 0.85rem; border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--stroke); background: var(--surface);
+      transition: border-color 0.2s;
     }
-    .topbar a:hover { border-color: var(--accent); color: #fff; }
+    .topbar a:hover { border-color: var(--primary); color: var(--primary); }
     .layout { display: grid; gap: 1.25rem; }
     @media (min-width: 960px) {
       .layout { grid-template-columns: 1fr 340px; align-items: start; }
     }
     .player-wrap {
-      border-radius: 18px; overflow: hidden;
-      background: #111827;
+      border-radius: 12px; overflow: hidden;
+      background: var(--surface);
       border: 1px solid var(--stroke);
-      box-shadow: 0 18px 48px rgba(0,0,0,0.45);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
-    .player-aspect { position: relative; width: 100%; padding-top: 56.25%; background: #0f172a; }
+    .player-aspect { position: relative; width: 100%; padding-top: 56.25%; background: #0a0a0a; }
     .player-aspect video, .player-aspect .skel {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block;
     }
     .skel {
-      background: linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      background: linear-gradient(90deg, #141414 0%, #1e1e1e 50%, #141414 100%);
       background-size: 200% 100%; animation: sh 1.2s ease-in-out infinite;
     }
     @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
     .player-meta { padding: 1.1rem 1.25rem 1.25rem; }
-    .player-meta h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
-    .player-meta p { color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+    .player-meta h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .player-meta p { color: var(--muted); font-size: 0.875rem; line-height: 1.55; }
     .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
     .chip {
-      font-size: 0.68rem; font-weight: 800; padding: 0.32rem 0.65rem; border-radius: 999px;
-      background: rgba(30, 41, 59, 0.92); color: #ffd4dc; border: 1px solid rgba(229, 9, 20, 0.35);
+      font-size: 0.68rem; font-weight: 700; padding: 0.32rem 0.65rem; border-radius: 999px;
+      background: rgba(0, 175, 240, 0.1); color: var(--primary); border: 1px solid rgba(0, 175, 240, 0.25);
     }
     .pay-panel {
-      border-radius: 18px;
-      background: linear-gradient(165deg, rgba(229, 9, 20, 0.1) 0%, #111827 45%, #0f172a 100%);
+      border-radius: 12px;
+      background: var(--surface);
       border: 1px solid var(--stroke);
       padding: 1.15rem 1.2rem 1.25rem;
-      box-shadow: 0 14px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      position: sticky; top: 5rem;
     }
-    .pay-panel h2 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.35rem; }
-    .pay-price { font-size: 1.65rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; }
-    .pay-price small { font-size: 0.8rem; opacity: 0.7; margin-left: 0.2rem; }
+    .pay-panel-header {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;
+    }
+    .pay-panel-header svg { color: var(--primary); flex-shrink: 0; }
+    .pay-panel h2 { font-size: 0.95rem; font-weight: 700; }
+    .pay-price { font-size: 1.75rem; font-weight: 800; color: var(--primary); margin-bottom: 0.75rem; letter-spacing: -0.03em; }
+    .pay-price small { font-size: 0.8rem; opacity: 0.7; margin-left: 0.2rem; color: var(--muted); font-weight: 500; }
     .pay-note {
-      font-size: 0.72rem; font-weight: 600; line-height: 1.45; color: #ffd9df;
-      background: rgba(229, 9, 20, 0.08); border: 1px solid rgba(229, 9, 20, 0.3);
+      font-size: 0.72rem; font-weight: 500; line-height: 1.45; color: #b0b0b0;
+      background: rgba(0, 175, 240, 0.06); border: 1px solid rgba(0, 175, 240, 0.2);
       border-radius: 10px; padding: 0.65rem 0.75rem; margin-bottom: 0.9rem;
     }
     .pay-section { margin-bottom: 0.95rem; }
     .pay-section-title {
       font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      color: #8a8494; margin-bottom: 0.5rem;
+      color: var(--muted); margin-bottom: 0.5rem;
     }
     .btn {
-      font-family: inherit; font-weight: 700; font-size: 0.8rem; border-radius: 10px;
-      padding: 0.62rem 0.875rem; cursor: pointer; border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.03); color: #e8e6ec; text-align: center; text-decoration: none;
-      display: block; width: 100%; transition: background 0.18s, border-color 0.18s;
+      font-family: inherit; font-weight: 600; font-size: 0.82rem; border-radius: 999px;
+      padding: 0.65rem 0.875rem; cursor: pointer; border: 1px solid var(--stroke);
+      background: var(--surface-2); color: #ccc; text-align: center; text-decoration: none;
+      display: block; width: 100%; transition: background 0.18s, border-color 0.18s, color 0.18s;
     }
-    .btn:hover { background: rgba(255,255,255,0.065); color: #fff; }
+    .btn:hover { background: #252525; color: #fff; }
     .btn-primary {
-      background: linear-gradient(180deg, var(--primary-light) 0%, var(--primary-deep) 100%);
-      color: #fff; border-color: rgba(5, 150, 105, 0.5);
-      box-shadow: 0 8px 24px rgba(229, 9, 20, 0.25);
+      background: var(--primary); color: #fff; border-color: var(--primary);
     }
-    .btn-primary:hover { filter: brightness(1.06); color: #fff; }
-    .btn-tg { background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.35); color: #7dd3fc; margin-top: 0.4rem; }
-    .pay-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: #fff; }
+    .btn-tg { background: rgba(0, 175, 240, 0.08); border-color: rgba(0, 175, 240, 0.25); color: var(--primary); margin-top: 0.4rem; }
+    .btn-tg:hover { background: rgba(0, 175, 240, 0.15); color: var(--primary-hover); }
+    .btn-pay-cta { padding: 0.72rem 1rem !important; }
     .btn-pay-inner {
       display: inline-flex; align-items: center; justify-content: center;
-      gap: 0.55rem; width: 100%; flex-wrap: wrap;
+      gap: 0.55rem; width: 100%; flex-wrap: nowrap;
     }
-    .btn-pay-text { font-weight: 700; letter-spacing: 0.01em; }
-    .pay-method-icons { display: inline-flex; align-items: center; gap: 0.4rem; }
-    .pay-method-icons svg { height: 1.15rem; width: auto; flex-shrink: 0; opacity: 0.95; }
-    .btn-paddle-cta .pay-method-icons svg { filter: brightness(1.05); }
+    .btn-pay-text { font-weight: 700; letter-spacing: 0.01em; white-space: nowrap; }
+    .pay-method-icons {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding-left: 0.35rem; border-left: 1px solid rgba(255,255,255,0.2);
+    }
+    .pay-method-icons svg { height: 1.05rem; width: auto; flex-shrink: 0; opacity: 0.95; }
+    .pay-icon-card { width: 1.35rem !important; }
+    .pay-icon-cashapp { width: 1.1rem !important; }
+    .pay-actions { display: flex; flex-direction: column; gap: 0.4rem; }
     .crypto-row {
       padding: 0.65rem 0.75rem; margin-bottom: 0.45rem; border-radius: 10px;
-      background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(0,0,0,0.25); border: 1px solid var(--stroke);
     }
     .crypto-row-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
     .crypto-label { font-size: 0.78rem; font-weight: 700; }
-    .crypto-addr { font-family: ui-monospace, monospace; font-size: 0.65rem; word-break: break-all; color: #c5bfd0; }
+    .crypto-addr { font-family: ui-monospace, monospace; font-size: 0.65rem; word-break: break-all; color: var(--muted); }
     .btn-copy {
       font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color: #e2dfe8; cursor: pointer;
+      border: 1px solid var(--stroke); background: var(--surface-2); color: #ccc; cursor: pointer;
     }
     .alert {
       padding: 0.85rem 1rem; border-radius: 10px; margin-bottom: 1rem;
-      background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #bae6fd;
+      background: rgba(0, 175, 240, 0.08); border: 1px solid rgba(0, 175, 240, 0.25); color: #9fdcf7;
     }
-    .alert.err { background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.35); color: #fecaca; }
+    .alert.err { background: rgba(255, 71, 87, 0.08); border-color: rgba(255, 71, 87, 0.3); color: #ff8a95; }
     .state-box { text-align: center; padding: 3rem 1.5rem; color: var(--muted); }
-    footer { text-align: center; padding: 2rem 1rem; font-size: 0.72rem; color: #64748b; }
+    footer {
+      text-align: center; padding: 2rem 1rem;
+      font-size: 0.72rem; color: #555;
+      border-top: 1px solid var(--stroke);
+    }
+    footer .footer-18 {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-weight: 700; color: var(--danger); margin-bottom: 0.5rem;
+    }
     .purchase-toast {
       position: fixed; left: 1rem; bottom: 1rem; z-index: 99990;
       max-width: min(340px, calc(100vw - 2rem));
       display: flex; align-items: flex-start; gap: 0.65rem;
       padding: 0.85rem 1rem; border-radius: 14px;
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid rgba(229, 9, 20, 0.45);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 24px rgba(229, 9, 20, 0.18);
+      background: var(--surface);
+      border: 1px solid var(--stroke-hi);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
       transform: translateY(120%); opacity: 0;
       transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
       pointer-events: none;
@@ -151,24 +218,44 @@
       animation: pulse-dot 1.4s ease-in-out infinite;
     }
     @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-    .purchase-toast-body { flex: 1; min-width: 0; font-size: 0.78rem; line-height: 1.45; color: #cbd5e1; }
-    .purchase-toast-who { display: block; font-weight: 800; color: #f8fafc; margin-bottom: 0.15rem; }
+    .purchase-toast-body { flex: 1; min-width: 0; font-size: 0.78rem; line-height: 1.45; color: var(--muted); }
+    .purchase-toast-who { display: block; font-weight: 800; color: #fff; margin-bottom: 0.15rem; }
     .purchase-toast-msg em { font-style: normal; color: var(--accent-gold); font-weight: 800; }
     .purchase-toast-time { flex-shrink: 0; font-size: 0.62rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="/">
+        <div class="brand-icon">18+</div>
+        <span class="brand-name">{{SITE_NAME}}</span>
+      </a>
+      <div class="header-actions">
+        <span class="badge-secure">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure
+        </span>
+        <span class="badge-18">18+ ONLY</span>
+        <a class="nav-link" id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="age-strip">
+    <strong>Adults only.</strong> By viewing this content you confirm you are 18 years of age or older.
+  </div>
+
   <div class="container">
     <div class="topbar">
       <a href="/">← Back to catalog</a>
-      <a id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a>
     </div>
 
     <div id="pay-cancel" class="alert" role="status" hidden>Payment cancelled. No charges were made.</div>
     <div id="err-banner" class="alert err" role="alert" hidden></div>
 
     <div id="loading-state" class="state-box">Loading video…</div>
-    <div id="error-state" class="state-box" hidden>Video not found. <a href="/" style="color:#34d399">Return home</a></div>
+    <div id="error-state" class="state-box" hidden>Video not found. <a href="/" style="color:var(--primary)">Return home</a></div>
 
     <div id="watch-layout" class="layout" hidden>
       <div>
@@ -186,14 +273,26 @@
       </div>
 
       <aside class="pay-panel" id="pay-panel">
-        <h2>Unlock access</h2>
+        <div class="pay-panel-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <h2>Unlock access</h2>
+        </div>
         <p class="pay-price" id="v-price">—</p>
         <p class="pay-note">
-          Secure checkout with card, PayPal, Apple Pay, and crypto. Charges appear under a neutral descriptor on your statement.
+          Secure checkout with card, Apple Pay &amp; Cash App. Charges appear under a discreet descriptor on your statement.
         </p>
         <div class="pay-section">
-          <p class="pay-section-title">Card &amp; PayPal</p>
-          <button type="button" class="btn btn-primary" id="btn-pay-instant">Pay Instantly</button>
+          <p class="pay-section-title">Instant payment</p>
+          <button type="button" class="btn btn-primary btn-pay-cta" id="btn-pay-instant">
+            <span class="btn-pay-inner">
+              <span class="btn-pay-text">Pay Instantly</span>
+              <span class="pay-method-icons" aria-hidden="true">
+                <svg class="pay-icon-apple" viewBox="0 0 50 32" aria-hidden="true"><rect width="50" height="32" rx="5" fill="#fff"/><path d="M13.2 9.8c-.5.6-1.2 1-2 1-.1-.8.3-1.5.7-2 .5-.6 1.3-1 2-.9.1.8-.2 1.5-.7 2.1zm.6 1.1c-1-.1-1.9.6-2.5.6s-1.3-.6-2.2-.6-1.6.6-2.1 1.4c-.9 1.1.6 3.3 1.7 3.4.5 0 .9-.3 1.5-.3s1 .3 1.5.3c.6.1 2.3-1.1 2.4-2.2-1.1-.4-1.9-1.4-1.3-2.6z" fill="#000" transform="translate(1,3)"/><text x="22" y="20" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="10" font-weight="600" fill="#000">Pay</text></svg>
+                <svg class="pay-icon-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                <svg class="pay-icon-cashapp" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="5" fill="#00D632"/><text x="12" y="16.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#fff">$</text></svg>
+              </span>
+            </span>
+          </button>
         </div>
         <div class="pay-section" id="crypto-section" hidden>
           <p class="pay-section-title">Cryptocurrency</p>
@@ -208,7 +307,10 @@
     </div>
   </div>
 
-  <footer>© {{SITE_NAME}}</footer>
+  <footer>
+    <div class="footer-18">18+ ADULTS ONLY</div>
+    <p>© {{SITE_NAME}} · Secure encrypted checkout · Adults 18+ only</p>
+  </footer>
 
   <div id="purchase-toast" class="purchase-toast" hidden role="status" aria-live="polite">
     <span class="purchase-toast-dot" aria-hidden="true"></span>
@@ -274,6 +376,8 @@
         p2.set('display_title', displayTitle || 'Digital purchase');
         p2.set('method', method || 'whop');
         if (videoId) p2.set('video_id', videoId);
+        var tgCheckout = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
+        if (tgCheckout) p2.set('telegram_username', tgCheckout);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
         p2.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
@@ -403,7 +507,7 @@
       async function boot() {
         parseUrlParams();
         EBOOKS_ORIGIN = normalizeOrigin(EBOOKS_ORIGIN || '');
-        if (!EBOOKS_ORIGIN) setErr('Set EBOOKS_SITE_URL so payments redirect to the delivery site (Telegram).');
+        if (!EBOOKS_ORIGIN) setErr('Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL so checkout redirects to the ebooks payment site.');
         try {
           var br = await fetch('/api/site-brief').then(function (r) { return r.json(); });
           if (br.telegram_username) tgUser = br.telegram_username.replace(/^@/, '');

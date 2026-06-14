@@ -5,120 +5,206 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{SITE_NAME}}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #e50914;
-      --primary-light: #ff2d55;
-      --primary-deep: #b20710;
-      --accent: #60a5fa;
-      --accent-gold: #fbbf24;
-      --bg: #0b1220;
-      --card: linear-gradient(165deg, #151d2e 0%, #111827 55%, #0f172a 100%);
-      --chip: rgba(30, 41, 59, 0.92);
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --stroke: rgba(148, 163, 184, 0.14);
-      --stroke-hi: rgba(16, 185, 129, 0.48);
-      --red: #e50914;
-      --red2: #ff2d55;
+      --primary: #00aff0;
+      --primary-hover: #33c0ff;
+      --primary-light: #33c0ff;
+      --primary-deep: #008ecf;
+      --accent: #00aff0;
+      --accent-gold: #ffd166;
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1e1e1e;
+      --card: #181818;
+      --chip: rgba(255, 255, 255, 0.06);
+      --text: #ffffff;
+      --muted: #8e8e8e;
+      --stroke: rgba(255, 255, 255, 0.08);
+      --stroke-hi: rgba(0, 175, 240, 0.5);
+      --danger: #ff4757;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { color-scheme: dark; }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       background: var(--bg);
-      background-image:
-        radial-gradient(ellipse 100% 60% at 50% -20%, rgba(229, 9, 20, 0.16), transparent),
-        radial-gradient(ellipse 50% 40% at 100% 0%, rgba(255, 45, 85, 0.09), transparent);
       color: var(--text);
       min-height: 100vh;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    .container { max-width: 1180px; margin: 0 auto; padding: 1.25rem; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 1.25rem 2.5rem; }
+
+    /* Header */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--stroke);
+    }
+    .site-header-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0.85rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.65rem; text-decoration: none; color: var(--text);
+    }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.75rem; color: #fff; flex-shrink: 0;
+    }
+    .brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.02em; }
+    .header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .badge-18 {
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em;
+      padding: 0.28rem 0.55rem; border-radius: 4px;
+      background: rgba(255, 71, 87, 0.15); color: #ff6b7a;
+      border: 1px solid rgba(255, 71, 87, 0.35);
+    }
+    .badge-secure {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.68rem; font-weight: 600; color: var(--muted);
+    }
+    .badge-secure svg { opacity: 0.7; }
+    .nav-link {
+      color: var(--text); font-weight: 600; text-decoration: none; font-size: 0.8rem;
+      padding: 0.45rem 0.9rem; border-radius: 999px;
+      border: 1px solid var(--stroke); background: var(--surface);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .nav-link:hover { border-color: var(--primary); background: rgba(0, 175, 240, 0.08); }
+
+    /* Age strip */
+    .age-strip {
+      background: var(--surface);
+      border-bottom: 1px solid var(--stroke);
+      padding: 0.5rem 1.25rem;
+      text-align: center;
+      font-size: 0.72rem; font-weight: 500; color: var(--muted);
+    }
+    .age-strip strong { color: var(--text); font-weight: 600; }
+    .trust-bar {
+      display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+      gap: 0.5rem 1.25rem; padding: 0.75rem 0 0.25rem;
+      font-size: 0.72rem; font-weight: 600; color: var(--muted);
+    }
+    .trust-bar span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .trust-bar svg { opacity: 0.65; flex-shrink: 0; }
     .hero {
-      border: 1px solid rgba(229, 9, 20, 0.48);
-      border-radius: 20px;
+      border: 1px solid var(--stroke-hi);
+      border-radius: 16px;
       padding: 1.35rem 1.65rem;
-      background: linear-gradient(180deg, rgba(21, 29, 46, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(229, 9, 20, 0.08);
+      background: linear-gradient(135deg, rgba(0, 175, 240, 0.08) 0%, var(--surface) 100%);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       margin-bottom: 1.25rem;
     }
     .promo-banner {
-      border: 1px solid rgba(229, 9, 20, 0.45);
-      border-radius: 20px;
-      padding: 1rem 1.1rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, rgba(229, 9, 20, 0.12), rgba(15, 23, 42, 0.96));
-      box-shadow: 0 14px 34px rgba(0,0,0,0.4);
+      border: 1px solid var(--stroke-hi);
+      border-radius: 16px;
+      padding: 1.25rem 1.35rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, rgba(0, 175, 240, 0.1) 0%, var(--surface) 60%, var(--bg) 100%);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .promo-banner::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    .promo-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 0.5rem;
     }
     .promo-title {
-      font-size: 1.05rem;
+      font-size: 1.2rem;
       font-weight: 800;
       margin-bottom: 0.35rem;
       color: #fff;
+      letter-spacing: -0.02em;
     }
     .promo-sub {
-      font-size: 0.8rem;
-      color: #cbd5e1;
-      margin-bottom: 0.45rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
     }
     .promo-hint {
-      font-size: 0.76rem;
-      line-height: 1.45;
-      color: #ffd9df;
-      background: rgba(229, 9, 20, 0.1);
-      border: 1px solid rgba(229, 9, 20, 0.28);
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #b0b0b0;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--stroke);
       border-radius: 10px;
-      padding: 0.55rem 0.7rem;
-      margin-bottom: 0.7rem;
+      padding: 0.6rem 0.75rem;
+      margin-bottom: 0.85rem;
     }
-    .promo-actions { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .promo-hint svg { vertical-align: -2px; margin-right: 0.3rem; opacity: 0.7; }
+    .promo-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .promo-btn {
-      border-radius: 10px;
-      padding: 0.58rem 0.8rem;
-      font-size: 0.8rem;
+      border-radius: 999px;
+      padding: 0.62rem 1.1rem;
+      font-size: 0.82rem;
       font-weight: 700;
       text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.14);
+      border: 1px solid var(--stroke);
       color: #fff;
-      background: rgba(255,255,255,0.04);
+      background: var(--surface-2);
       cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
     }
+    .promo-btn:hover { border-color: rgba(255,255,255,0.18); background: #252525; }
     .promo-btn.primary {
-      background: linear-gradient(180deg, var(--primary-light) 0%, var(--primary-deep) 100%);
-      border-color: rgba(178, 7, 16, 0.8);
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
     }
+    .promo-btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
     .hero-over { color: var(--accent-gold); font-size: 0.72rem; font-weight: 800; letter-spacing: .12em; }
     .hero h2 {
-      color: var(--primary-light);
-      font-weight: 900;
-      text-transform: uppercase;
+      color: var(--primary);
+      font-weight: 800;
       font-size: clamp(1.35rem, 3.5vw, 1.85rem);
       line-height: 1.1;
       margin: 0.35rem 0;
     }
-    .hero p { color: #cbd5e1; font-size: 0.88rem; max-width: 520px; }
+    .hero p { color: var(--muted); font-size: 0.88rem; max-width: 520px; }
     .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.75rem; }
     .chip {
-      font-size: 0.68rem; font-weight: 800; padding: 0.32rem 0.65rem; border-radius: 999px;
-      background: var(--chip); color: #ffd4dc; border: 1px solid rgba(229, 9, 20, 0.35);
+      font-size: 0.68rem; font-weight: 700; padding: 0.32rem 0.65rem; border-radius: 999px;
+      background: rgba(0, 175, 240, 0.1); color: var(--primary); border: 1px solid rgba(0, 175, 240, 0.25);
     }
     .toolbar {
       display: flex; flex-direction: column; gap: 0.75rem;
-      margin: 1.5rem 0 1rem;
+      margin: 0 0 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--stroke);
     }
     @media (min-width: 768px) {
       .toolbar { flex-direction: row; align-items: center; justify-content: space-between; }
     }
-    .toolbar h1 { font-size: 1.45rem; font-weight: 800; color: #e2e8f0; }
+    .toolbar h1 { font-size: 1.35rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+    .toolbar-sub { font-size: 0.75rem; color: var(--muted); font-weight: 500; margin-top: 0.15rem; }
+    .search-wrap { position: relative; width: 100%; max-width: 340px; }
     .search {
-      width: 100%; max-width: 320px; padding: 0.55rem 1rem; border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(15, 23, 42, 0.95); color: #f1f5f9;
-      font-family: inherit; font-size: 0.88rem;
+      width: 100%; padding: 0.6rem 1rem 0.6rem 2.4rem; border-radius: 999px;
+      border: 1px solid var(--stroke); background: var(--surface); color: var(--text);
+      font-family: inherit; font-size: 0.875rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .search:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.16); }
+    .search::placeholder { color: #666; }
+    .search:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 175, 240, 0.15); }
+    .search-icon {
+      position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+    }
     .alert {
       display: none; padding: 0.85rem 1rem; border-radius: 10px; margin-bottom: 1rem;
       background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35); color: #bfdbfe;
@@ -126,48 +212,40 @@
     .alert.on { display: block; }
     .alert.err { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.35); color: #fecaca; }
     .grid {
-      display: grid; gap: 1rem;
+      display: grid; gap: 1.25rem;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     }
     @media (min-width: 600px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 1100px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1200px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 
     .vcard {
       position: relative;
-      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+      border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
       background: var(--card);
       border: 1px solid var(--stroke);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 14px 40px rgba(0,0,0,0.45);
       cursor: pointer;
-      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
     }
     .vcard:focus-within {
       outline: none;
       border-color: var(--stroke-hi);
-      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 18px 48px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 0 0 1px rgba(0, 175, 240, 0.2), 0 12px 40px rgba(0, 0, 0, 0.5);
     }
     .vcard:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
       border-color: var(--stroke-hi);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 22px 56px rgba(0,0,0,0.55),
-        0 0 42px rgba(229, 9, 20, 0.18);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 32px rgba(0, 175, 240, 0.12);
     }
     .vcard.ph-card {
       cursor: default;
       pointer-events: none;
-      opacity: 0.82;
-      border-color: rgba(255,255,255,0.055);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+      opacity: 0.7;
     }
-    .vcard.ph-card:hover {
-      transform: none;
-      border-color: rgba(255,255,255,0.055);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
-    }
+    .vcard.ph-card:hover { transform: none; box-shadow: none; border-color: var(--stroke); }
     .vcard-media {
       position: relative; width: 100%; padding-top: 56.25%;
-      background: radial-gradient(120% 80% at 50% 0%, #1e293b 0%, #0b1220 72%);
+      background: var(--surface);
     }
     .vcard-media-inner {
       position: absolute; inset: 0;
@@ -175,66 +253,76 @@
       contain: layout style;
     }
     .vcard-media img, .vcard-media video {
-      width: 100%; height: 100%; object-fit: cover; display: block; background: #05000c;
+      width: 100%; height: 100%; object-fit: cover; display: block; background: #0a0a0a;
     }
     .skel {
       position: absolute; inset: 0;
-      background: linear-gradient(90deg, #0a0a12 0%, #12121a 50%, #0a0a12 100%);
+      background: linear-gradient(90deg, #141414 0%, #1e1e1e 50%, #141414 100%);
       background-size: 200% 100%; animation: sh 1.2s ease-in-out infinite;
     }
     @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
     .preview-hit {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
       z-index: 4; text-decoration: none; color: inherit;
+      background: rgba(0,0,0,0);
+      transition: background 0.25s var(--ease);
     }
     .preview-hit[hidden] { display: none !important; }
+    .vcard:hover .preview-hit { background: rgba(0,0,0,0.35); }
     .play-circ {
-      width: 62px; height: 62px; border-radius: 50%;
-      background: rgba(8,8,12,0.72);
-      border: 1px solid rgba(255,255,255,0.18);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(0, 175, 240, 0.9);
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
-      transition: transform 0.22s var(--ease), border-color 0.22s, background 0.22s;
+      box-shadow: 0 4px 20px rgba(0, 175, 240, 0.4);
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
     }
     .vcard:hover .play-circ {
-      border-color: rgba(255,255,255,0.28);
-      background: rgba(229, 9, 20, 0.22);
-      transform: scale(1.04);
+      opacity: 1;
+      transform: scale(1);
     }
     .play-tri {
-      width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent;
-      border-left: 19px solid rgba(255,255,255,0.95); margin-left: 5px;
+      width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+      border-left: 16px solid #fff; margin-left: 4px;
     }
     .grad-over {
       position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(to top, rgba(8,8,12,0.92) 0%, rgba(10,10,14,0.35) 45%, transparent 100%);
-      opacity: 0.35; z-index: 2; transition: opacity 0.28s var(--ease);
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 50%);
+      z-index: 2;
     }
-    .vcard:hover .grad-over { opacity: 0.72; }
     .badge-price {
       position: absolute; top: 10px; right: 10px; z-index: 3;
-      font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.02em;
-      padding: 0.32rem 0.72rem; border-radius: 8px;
-      background: rgba(12,12,16,0.92);
-      border: 1px solid rgba(255,255,255,0.12);
+      font-weight: 700; font-size: 0.8rem; letter-spacing: 0.01em;
+      padding: 0.3rem 0.65rem; border-radius: 999px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
       color: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
     }
     .badge-price em {
-      font-style: normal; color: var(--red2); font-weight: 700;
+      font-style: normal; color: var(--primary); font-weight: 700;
     }
     .vcard-ph-free .badge-price {
-      background: rgba(34,158,217,0.18);
-      border-color: rgba(34,158,217,0.35);
-      color: #9fdcf7;
+      background: rgba(0, 175, 240, 0.2);
+      border-color: rgba(0, 175, 240, 0.4);
+      color: var(--primary);
+    }
+    .badge-lock {
+      position: absolute; top: 10px; left: 10px; z-index: 3;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
     }
     .badge-dur {
       position: absolute; bottom: 10px; right: 10px; z-index: 3;
-      font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.03em;
-      padding: 0.28rem 0.5rem; border-radius: 6px;
-      background: rgba(0,0,0,0.78);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #f5f5f7;
+      font-size: 0.6875rem; font-weight: 600;
+      padding: 0.25rem 0.45rem; border-radius: 4px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
       font-variant-numeric: tabular-nums;
     }
     .load-ov {
@@ -244,72 +332,71 @@
     }
     .load-ov[hidden] { display: none !important; }
     .vcard-body {
-      padding: 1rem 1.125rem 1.125rem; flex: 1; display: flex; flex-direction: column;
-      gap: 0.55rem;
-      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 0.85rem 1rem 1rem; flex: 1; display: flex; flex-direction: column;
+      gap: 0.5rem;
     }
     .vcard-title {
-      font-weight: 600; font-size: 0.9375rem; line-height: 1.35; min-height: 2.6rem;
-      letter-spacing: -0.02em;
+      font-weight: 600; font-size: 0.875rem; line-height: 1.35;
+      letter-spacing: -0.01em;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-      color: #f4f4f6;
+      color: #fff;
     }
     .vcard-trust {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem;
-      font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em;
-      text-transform: uppercase; color: rgba(158,151,168,0.95);
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem;
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.03em;
+      text-transform: uppercase; color: var(--muted);
     }
-    .vcard-trust-item { display: inline-flex; align-items: center; gap: 0.28rem; }
-    .vcard-trust-dot { opacity: 0.45; user-select: none; }
+    .vcard-trust-item { display: inline-flex; align-items: center; gap: 0.25rem; }
+    .vcard-trust-item svg { opacity: 0.6; }
+    .vcard-trust-dot { opacity: 0.35; user-select: none; }
     .vcard-meta {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 0.65rem;
-      font-size: 0.75rem; color: var(--muted);
-      padding-top: 0.125rem;
+      display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; color: var(--muted);
     }
     .vcard-meta-item {
-      display: inline-flex; align-items: center; gap: 0.35rem;
+      display: inline-flex; align-items: center; gap: 0.3rem;
       font-variant-numeric: tabular-nums;
       min-width: 0;
     }
-    .vcard-meta svg { flex-shrink: 0; opacity: 0.55; }
-    .btn-row { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.15rem; }
+    .vcard-meta svg { flex-shrink: 0; opacity: 0.5; }
+    .btn-row { display: flex; gap: 0.4rem; margin-top: 0.25rem; }
     .btn {
-      font-family: inherit; font-weight: 700; font-size: 0.8rem; border-radius: 10px;
-      padding: 0.58rem 0.875rem; cursor: pointer; border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.03); color: #e8e6ec; text-align: center; text-decoration: none;
+      font-family: inherit; font-weight: 600; font-size: 0.78rem; border-radius: 999px;
+      padding: 0.52rem 0.75rem; cursor: pointer; border: 1px solid var(--stroke);
+      background: var(--surface-2); color: #ccc; text-align: center; text-decoration: none;
       transition: background 0.18s, border-color 0.18s, color 0.18s;
+      flex: 1;
     }
     .btn:hover {
-      background: rgba(255,255,255,0.065);
-      border-color: rgba(255,255,255,0.12);
+      background: #252525;
+      border-color: rgba(255,255,255,0.14);
       color: #fff;
     }
     .btn-primary {
-      background: linear-gradient(180deg, var(--primary-light) 0%, var(--primary-deep) 100%);
+      background: var(--primary);
       color: #fff;
-      border-color: rgba(5, 150, 105, 0.5);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 8px 24px rgba(16, 185, 129, 0.25);
+      border-color: var(--primary);
     }
     .btn-primary:hover {
-      filter: brightness(1.06);
-      border-color: rgba(0,0,0,0.28);
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
       color: #fff;
     }
     .price-row {
-      display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem;
-      margin-top: 0.2rem;
-      padding-top: 0.65rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+      margin-top: 0.15rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--stroke);
     }
-    .price-row-label { font-size: 0.7rem; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .price-row-label { font-size: 0.65rem; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
     .price-row-amt {
-      font-size: 1.125rem;
+      font-size: 1rem;
       font-weight: 700;
-      letter-spacing: -0.03em;
-      color: #fff;
+      letter-spacing: -0.02em;
+      color: var(--primary);
       font-variant-numeric: tabular-nums;
     }
-    .price-row-amt small { font-size: 0.82rem; font-weight: 600; opacity: 0.75; margin-left: 0.15rem; }
+    .price-row-amt small { font-size: 0.7rem; font-weight: 500; opacity: 0.7; margin-left: 0.1rem; color: var(--muted); }
     .ph-card .vcard-title { color: #666; font-family: ui-monospace, monospace; font-size: 0.75rem; word-break: break-all; }
     /**
      * Closed <dialog> must stay display:none — never set display:flex on dialog without [open],
@@ -321,7 +408,7 @@
     }
     dialog.dlg-modal[open] {
       border: none;
-      border-radius: 18px;
+      border-radius: 12px;
       max-width: min(440px, calc(100vw - 2rem));
       width: min(440px, calc(100vw - 2rem));
       max-height: min(90vh, 720px);
@@ -331,10 +418,10 @@
       position: fixed;
       inset: 0;
       z-index: 2147483647;
-      background: linear-gradient(165deg, #141418 0%, #0c0c10 45%, #09090c 100%);
+      background: var(--surface);
       color: var(--text);
-      border: 1px solid rgba(255,255,255,0.09);
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 28px 80px rgba(0,0,0,0.75), 0 0 100px rgba(16, 185, 129, 0.08);
+      border: 1px solid var(--stroke);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 60px rgba(0, 175, 240, 0.06);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -386,12 +473,12 @@
       border: 1px solid rgba(255,255,255,0.06);
     }
     .pay-summary-title { font-size: 0.9375rem; font-weight: 600; color: #f4f4f6; line-height: 1.35; margin-bottom: 0.35rem; }
-    .pay-summary-price { font-size: 1.35rem; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+    .pay-summary-price { font-size: 1.35rem; font-weight: 700; color: var(--primary); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
     .pay-summary-price small { font-size: 0.75rem; font-weight: 600; opacity: 0.65; margin-left: 0.25rem; color: #b0aab8; }
     .pay-note {
       padding: 0.7rem 0.85rem; border-radius: 10px; margin-bottom: 1rem;
-      font-size: 0.75rem; font-weight: 600; line-height: 1.45; color: #d1fae5;
-      background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28);
+      font-size: 0.75rem; font-weight: 500; line-height: 1.45; color: #b0b0b0;
+      background: rgba(0, 175, 240, 0.06); border: 1px solid rgba(0, 175, 240, 0.2);
     }
     .pay-section { margin-bottom: 1.1rem; }
     .pay-section:last-child { margin-bottom: 0; }
@@ -404,13 +491,19 @@
     }
     .btn-block { width: 100%; display: block; box-sizing: border-box; }
     .pay-actions { display: flex; flex-direction: column; gap: 0.45rem; }
+    .btn-pay-cta { padding: 0.78rem 1rem !important; }
     .btn-pay-inner {
       display: inline-flex; align-items: center; justify-content: center;
-      gap: 0.55rem; width: 100%; flex-wrap: wrap;
+      gap: 0.55rem; width: 100%; flex-wrap: nowrap;
     }
-    .btn-pay-text { font-weight: 700; letter-spacing: 0.01em; }
-    .pay-method-icons { display: inline-flex; align-items: center; gap: 0.4rem; }
-    .pay-method-icons svg { height: 1.15rem; width: auto; flex-shrink: 0; opacity: 0.95; }
+    .btn-pay-text { font-weight: 700; letter-spacing: 0.01em; white-space: nowrap; }
+    .pay-method-icons {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding-left: 0.35rem; border-left: 1px solid rgba(255,255,255,0.2);
+    }
+    .pay-method-icons svg { height: 1.05rem; width: auto; flex-shrink: 0; opacity: 0.95; }
+    .pay-icon-card { width: 1.35rem !important; }
+    .pay-icon-cashapp { width: 1.1rem !important; }
     .crypto-row {
       display: flex; flex-direction: column; gap: 0.4rem;
       padding: 0.75rem 0.85rem;
@@ -446,22 +539,27 @@
       background: rgba(255,255,255,0.08) !important;
       border-color: rgba(255,255,255,0.14) !important;
     }
-    footer { text-align: center; padding: 2rem 1rem; font-size: 0.72rem; color: #666; }
-    .nav-top { display: flex; justify-content: flex-end; padding: 0.5rem 0; }
-    .nav-top a {
-      color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.78rem;
-      padding: 0.4rem 0.75rem; border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(15, 23, 42, 0.8);
+    footer {
+      text-align: center; padding: 2rem 1rem 1.5rem;
+      font-size: 0.72rem; color: #555;
+      border-top: 1px solid var(--stroke);
+      margin-top: 1rem;
     }
-    .nav-top a:hover { color: #fff; border-color: var(--accent); }
+    footer .footer-18 {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-weight: 700; color: var(--danger); margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+    }
+    footer p { max-width: 480px; margin: 0 auto; line-height: 1.5; }
+    .nav-top { display: none; }
     .purchase-toast {
       position: fixed; left: 1rem; bottom: 1rem; z-index: 99990;
       max-width: min(340px, calc(100vw - 2rem));
       display: flex; align-items: flex-start; gap: 0.65rem;
       padding: 0.85rem 1rem; border-radius: 14px;
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid rgba(229, 9, 20, 0.45);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 24px rgba(229, 9, 20, 0.18);
+      background: var(--surface);
+      border: 1px solid var(--stroke-hi);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
       transform: translateY(120%); opacity: 0;
       transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
       pointer-events: none;
@@ -484,16 +582,61 @@
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="/">
+        <div class="brand-icon">18+</div>
+        <span class="brand-name">{{SITE_NAME}}</span>
+      </a>
+      <div class="header-actions">
+        <span class="badge-secure">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure
+        </span>
+        <span class="badge-18">18+ ONLY</span>
+        <a class="nav-link" id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="age-strip">
+    <strong>Adults only.</strong> By entering this site you confirm you are 18 years of age or older.
+  </div>
+
   <div class="container">
-    <div class="nav-top"><a id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a></div>
+    <div class="trust-bar">
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        SSL Encrypted
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Secure Payment
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Instant Delivery
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Private &amp; Discreet
+      </span>
+    </div>
 
     <div class="promo-banner">
-      <div class="promo-title">🎉 Special Offer - All Content $100</div>
-      <div class="promo-sub">Complete collection • Instant delivery</div>
-      <p class="promo-hint">Secure checkout with card, PayPal, Apple Pay, and crypto. Payment is processed under a discreet product name on our ebook store.</p>
+      <div class="promo-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        VIP Offer
+      </div>
+      <div class="promo-title">All Content — $100</div>
+      <div class="promo-sub">Complete collection · Instant digital delivery</div>
+      <p class="promo-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Secure checkout with card, Apple Pay &amp; Cash App. Charges appear under a discreet descriptor on your statement.
+      </p>
       <div class="promo-actions">
-        <button type="button" class="promo-btn primary" id="promo-pay">Pay $100 Now</button>
-        <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+        <button type="button" class="promo-btn primary" id="promo-pay">Unlock All — $100</button>
+        <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Contact</a>
       </div>
     </div>
 
@@ -501,9 +644,17 @@
     <div id="err-banner" class="alert err" role="alert" hidden></div>
 
     <div class="toolbar">
-      <h1 id="grid-heading">Videos</h1>
-      <span class="chip" id="hydrate-chip" hidden style="align-self:flex-start">Updating full data…</span>
-      <input type="search" class="search" id="search" placeholder="Find folders, vip, premium…" autocomplete="off">
+      <div>
+        <h1 id="grid-heading">Content</h1>
+        <p class="toolbar-sub">Premium videos · Secure checkout · 18+ only</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+        <span class="chip" id="hydrate-chip" hidden>Loading…</span>
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" class="search" id="search" placeholder="Search content…" autocomplete="off">
+        </div>
+      </div>
     </div>
 
     <div class="grid" id="grid"></div>
@@ -518,12 +669,21 @@
     <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
     <div class="dlg-b">
       <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
-      <div class="pay-note">Payments use secure checkout (card, PayPal, Apple Pay, crypto). Charges appear under a neutral descriptor on your statement.</div>
+      <div class="pay-note">Secure checkout via Whop — card, Apple Pay &amp; Cash App. Charges appear under a neutral descriptor on your statement.</div>
 
       <div class="pay-section">
-        <div class="pay-section-title">Card &amp; PayPal</div>
-        <p class="pay-section-hint">Instant checkout — you will confirm on our secure ebook store before payment.</p>
-        <button type="button" class="btn btn-primary btn-block" style="padding:0.78rem 1rem;border-radius:12px" id="dlg-pay-instant">Pay Instantly</button>
+        <div class="pay-section-title">Instant payment</div>
+        <p class="pay-section-hint">Masked billing — processor sees a generic ebook title, not your video name.</p>
+        <button type="button" class="btn btn-primary btn-block btn-pay-cta" id="dlg-pay-instant">
+          <span class="btn-pay-inner">
+            <span class="btn-pay-text">Pay Instantly</span>
+            <span class="pay-method-icons" aria-hidden="true">
+              <svg class="pay-icon-apple" viewBox="0 0 50 32" aria-hidden="true"><rect width="50" height="32" rx="5" fill="#fff"/><path d="M13.2 9.8c-.5.6-1.2 1-2 1-.1-.8.3-1.5.7-2 .5-.6 1.3-1 2-.9.1.8-.2 1.5-.7 2.1zm.6 1.1c-1-.1-1.9.6-2.5.6s-1.3-.6-2.2-.6-1.6.6-2.1 1.4c-.9 1.1.6 3.3 1.7 3.4.5 0 .9-.3 1.5-.3s1 .3 1.5.3c.6.1 2.3-1.1 2.4-2.2-1.1-.4-1.9-1.4-1.3-2.6z" fill="#000" transform="translate(1,3)"/><text x="22" y="20" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="10" font-weight="600" fill="#000">Pay</text></svg>
+              <svg class="pay-icon-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+              <svg class="pay-icon-cashapp" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="5" fill="#00D632"/><text x="12" y="16.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#fff">$</text></svg>
+            </span>
+          </span>
+        </button>
       </div>
 
       <div class="pay-section" id="dlg-pay-crypto-section" hidden>
@@ -534,7 +694,13 @@
     </div>
   </dialog>
 
-  <footer>© {{SITE_NAME}} · Supabase + Wasabi</footer>
+  <footer>
+    <div class="footer-18">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      18+ ADULTS ONLY
+    </div>
+    <p>© {{SITE_NAME}} · All content is for adults 18+. Secure encrypted checkout. By using this site you agree you are of legal age in your jurisdiction.</p>
+  </footer>
 
   <div id="purchase-toast" class="purchase-toast" hidden role="status" aria-live="polite">
     <span class="purchase-toast-dot" aria-hidden="true"></span>
@@ -667,6 +833,8 @@
         p2.set('display_title', displayTitle || 'Digital purchase');
         p2.set('method', method || 'whop');
         if (vid) p2.set('video_id', vid);
+        var tgCheckout = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
+        if (tgCheckout) p2.set('telegram_username', tgCheckout);
         var cancelP = new URLSearchParams(p2.toString());
         cancelP.set('payment_canceled', 'true');
         p2.set('cancel_url', origin + '/api/paypal-checkout?' + cancelP.toString());
@@ -694,7 +862,7 @@
       function tgUrlForPromo(tgUser) {
         var msg =
           'Hi! I want the special offer: All Content for $100.\n\n' +
-          'I would like to pay with card or PayPal. Please send me the available payment options.';
+          'I would like to pay with card, Apple Pay or Cash App. Please send me the available payment options.';
         var enc = encodeURIComponent(msg);
         if (tgUser) return 'https://t.me/' + tgUser + '?text=' + enc;
         return 'https://t.me/share/url?url=&text=' + enc;
@@ -905,13 +1073,20 @@
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
           var svgCal =
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+          var svgLock =
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+          var svgShield =
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
           var trustLine = isFree
-            ? '<span class="vcard-trust-item">No payment</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">Instant access</span>'
-            : '<span class="vcard-trust-item">Secure checkout</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">Digital delivery</span>';
+            ? '<span class="vcard-trust-item">' + svgShield + ' Free access</span>'
+            : '<span class="vcard-trust-item">' + svgLock + ' Secure checkout</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">' + svgShield + ' Instant delivery</span>';
           var metaDate = escapeHtml(formatDateRel(v.created_at)) || '—';
           var badgeTop = isFree
             ? '<span class="badge-price">Free</span>'
             : '<span class="badge-price"><em>$</em>' + price.toFixed(2) + '</span>';
+          var lockBadge = !isFree
+            ? '<span class="badge-lock" aria-hidden="true">' + svgLock + '</span>'
+            : '';
           /** Only DB-hosted HTTPS thumbnails; Wasabi paths use signed URLs (private buckets break on plain path URLs). */
           var httpPoster = '';
           if (v.thumbnail_url && /^https?:\/\//i.test(String(v.thumbnail_url).trim())) {
@@ -925,6 +1100,7 @@
                 '<img class="js-thumb" alt="" style="display:none" />' +
                 '<div class="grad-over"></div>' +
                 '<a class="preview-hit" href="' + escapeAttr(previewHref) + '"><div class="play-circ"><div class="play-tri"></div></div></a>' +
+                lockBadge +
                 badgeTop +
                 (dur ? '<span class="badge-dur">' + escapeHtml(dur) + '</span>' : '') +
               '</div>' +
@@ -934,23 +1110,19 @@
               '<div class="vcard-trust">' + trustLine + '</div>' +
               '<div class="vcard-meta">' +
                 '<span class="vcard-meta-item">' + svgEye + formatViews(v.views) + '</span>' +
-                '<span class="vcard-meta-item" style="justify-content:flex-end;text-align:right">' + svgCal + metaDate + '</span>' +
+                '<span class="vcard-meta-item">' + svgCal + metaDate + '</span>' +
               '</div>' +
               '<div class="btn-row">' +
-                '<a class="btn btn-primary" href="' + escapeAttr(previewHref) + '" onclick="event.stopPropagation()">Preview</a>' +
-                '<button type="button" class="btn js-details">View details</button>' +
+                '<a class="btn" href="' + escapeAttr(previewHref) + '" onclick="event.stopPropagation()">Preview</a>' +
                 (isFree && v.product_link
-                  ? '<a class="btn btn-primary" href="' + escapeAttr(v.product_link) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open product</a>'
+                  ? '<a class="btn btn-primary" href="' + escapeAttr(v.product_link) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open</a>'
                   : (!isFree
-                    ? '<div style="display:flex;gap:0.4rem">' +
-                        '<a class="btn" style="flex:1" href="' + escapeAttr(tgUrlForVideo(v, tgUser) || '#') + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Contact</a>' +
-                        '<button type="button" class="btn btn-primary js-payopen" style="flex:1">Buy now</button>' +
-                      '</div>'
-                    : '')) +
+                    ? '<button type="button" class="btn btn-primary js-payopen">Buy</button>'
+                    : '<button type="button" class="btn js-details">Details</button>')) +
               '</div>' +
               (!isFree
                 ? '<div class="price-row">' +
-                    '<span class="price-row-label">Total</span>' +
+                    '<span class="price-row-label">Price</span>' +
                     '<span class="price-row-amt">$' + price.toFixed(2) + '<small>USD</small></span>' +
                   '</div>'
                 : '') +
@@ -961,19 +1133,18 @@
 
           el.setAttribute('aria-label', (v.title || 'Catalog item') + (isFree ? ', free' : ', ' + price.toFixed(2) + ' USD'));
 
+          el.querySelector('.js-details') && el.querySelector('.js-details').addEventListener('click', function (e) {
+            e.stopPropagation();
+            openDetails(v);
+          });
           el.addEventListener('click', function (e) {
             if (e.target.closest('a, button, video')) return;
-            fetch('/api/videos/' + v.id + '/views', { method: 'POST' }).catch(function () {});
-          });
-
-          el.querySelector('.js-details').addEventListener('click', function (e) {
-            e.stopPropagation();
             openDetails(v);
           });
           var po = el.querySelector('.js-payopen');
           if (po) po.addEventListener('click', function (e) {
             e.stopPropagation();
-            openPay(v);
+            startCheckout(v.price, null, v.title, v.id, 'whop');
           });
 
           g.appendChild(el);
@@ -1044,7 +1215,7 @@
               '</div>'
             : '') +
           '<p style="font-size:0.72rem;color:#888;margin-bottom:0.65rem;line-height:1.45">' +
-          'Payments use industry-standard processors. Charges appear under a neutral descriptor on your statement.</p>' +
+          'Payments use secure Whop checkout (card, Apple Pay, Cash App). Charges appear under a neutral descriptor on your statement.</p>' +
           '<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">' +
           '<a class="btn btn-primary" href="' + escapeAttr(watchPageUrl(v.id)) + '">Watch &amp; pay</a>' +
           '<a class="btn" href="' + escapeAttr(tgUrlForVideo(v, tgUser) || '#') + '" target="_blank">Contact</a>' +

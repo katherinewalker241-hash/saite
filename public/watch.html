@@ -374,7 +374,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'whop');
+        p2.set('method', method || 'stripe');
         if (videoId) p2.set('video_id', videoId);
         var tgCheckout = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
         if (tgCheckout) p2.set('telegram_username', tgCheckout);
@@ -388,7 +388,7 @@
         return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
       }
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'stripe');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -478,7 +478,7 @@
         var payBtn = document.getElementById('btn-pay-instant');
         if (payBtn) {
           payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'whop');
+            startCheckout(v.price, null, v.title, v.id, 'stripe');
           };
         }
         if (cryptoWallets.length) {

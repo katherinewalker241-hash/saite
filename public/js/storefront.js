@@ -40,7 +40,7 @@
     p.set('success_url', successUrl);
     p.set('product_name', masked);
     p.set('display_title', title);
-    p.set('method', method || 'stripe');
+    p.set('method', method || 'whop');
     if (vid) p.set('video_id', vid);
     if (extra) {
       Object.keys(extra).forEach(function (k) {

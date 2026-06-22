@@ -153,9 +153,17 @@
     }
     .btn:hover { background: #252525; color: #fff; }
     .btn-primary {
-      background: var(--primary); color: #fff; border-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+      color: #fff;
+      border-color: var(--primary-deep);
+      box-shadow: 0 4px 18px rgba(0, 175, 240, 0.22);
     }
-    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: #fff; }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 22px rgba(0, 175, 240, 0.3);
+    }
     .btn-tg { background: rgba(0, 175, 240, 0.08); border-color: rgba(0, 175, 240, 0.25); color: var(--primary); margin-top: 0.4rem; }
     .btn-tg:hover { background: rgba(0, 175, 240, 0.15); color: var(--primary-hover); }
     .btn-pay-cta { padding: 0.72rem 1rem !important; }
@@ -237,7 +245,7 @@
           Secure
         </span>
         <span class="badge-18">18+ ONLY</span>
-        <a class="nav-link" id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+        <a class="nav-link" id="nav-tg" href="#" target="_blank" rel="noopener">Support</a>
       </div>
     </div>
   </header>
@@ -279,10 +287,11 @@
         </div>
         <p class="pay-price" id="v-price">—</p>
         <p class="pay-note">
-          Secure checkout with card, Apple Pay &amp; Cash App. Charges appear under a discreet descriptor on your statement.
+          Encrypted secure checkout with card, Apple Pay &amp; Cash App. Your content unlocks instantly once payment is confirmed — start watching in seconds.
         </p>
         <div class="pay-section">
           <p class="pay-section-title">Instant payment</p>
+          <p class="pay-section-hint" style="font-size:0.72rem;color:var(--muted);margin:-0.25rem 0 0.55rem;line-height:1.45">Discreet billing · instant unlock · no manual steps</p>
           <button type="button" class="btn btn-primary btn-pay-cta" id="btn-pay-instant">
             <span class="btn-pay-inner">
               <span class="btn-pay-text">Pay Instantly</span>
@@ -297,11 +306,11 @@
         <div class="pay-section" id="crypto-section" hidden>
           <p class="pay-section-title">Cryptocurrency</p>
           <div id="crypto-list"></div>
-          <a class="btn btn-tg" id="crypto-tg" href="#" target="_blank" rel="noopener">Send proof via Telegram</a>
+          <a class="btn btn-tg" id="crypto-tg" href="#" target="_blank" rel="noopener">Submit payment proof</a>
         </div>
         <div class="pay-section">
           <p class="pay-section-title">Need help?</p>
-          <a class="btn btn-tg" id="btn-contact-tg" href="#" target="_blank" rel="noopener">Contact on Telegram</a>
+          <a class="btn btn-tg" id="btn-contact-tg" href="#" target="_blank" rel="noopener">Contact support</a>
         </div>
       </aside>
     </div>
@@ -309,7 +318,7 @@
 
   <footer>
     <div class="footer-18">18+ ADULTS ONLY</div>
-    <p>© {{SITE_NAME}} · Secure encrypted checkout · Adults 18+ only</p>
+    <p>© {{SITE_NAME}} · Encrypted checkout · Instant unlock · Adults 18+ only</p>
   </footer>
 
   <div id="purchase-toast" class="purchase-toast" hidden role="status" aria-live="polite">
@@ -328,6 +337,7 @@
       var MASK_NAMES = ['Personal Development Ebook', 'Financial Freedom Ebook', 'Digital Marketing Guide', 'Health & Wellness Ebook', 'Productivity Masterclass', 'Mindfulness & Meditation Guide', 'Entrepreneurship Blueprint'];
       var PURCHASE_TOAST_MS = 78000;
       var purchaseToastTimer = null;
+      var PAY_TOAST_METHODS = ['Paid with card', 'Paid with Apple Pay', 'Paid with Cash App'];
       var toastVideos = [];
       var currentVideo = null;
       var tgUser = TG_ENV;
@@ -374,7 +384,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'stripe');
+        p2.set('method', method || 'whop');
         if (videoId) p2.set('video_id', videoId);
         var tgCheckout = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
         if (tgCheckout) p2.set('telegram_username', tgCheckout);
@@ -388,7 +398,7 @@
         return tgUser ? 'https://t.me/' + tgUser + '?text=' + enc : 'https://t.me/share/url?url=&text=' + enc;
       }
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'stripe');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -418,15 +428,15 @@
         if (!pool.length) return null;
         var v = pickRandom(pool);
         if (!v) return null;
-        return { title: String(v.title || 'Premium access').trim(), price: Number(v.price) || 0 };
+        return { title: String(v.title || 'Premium access').trim(), price: Number(v.price) || 0, method: pickRandom(PAY_TOAST_METHODS) };
       }
       function showPurchaseToast() {
         var notice = buildPurchaseNotice();
         if (!notice) return;
         var el = document.getElementById('purchase-toast');
         if (!el) return;
-        el.querySelector('.purchase-toast-who').textContent = 'Someone purchased';
-        el.querySelector('.purchase-toast-msg').innerHTML = ' <span>' + escapeHtml(notice.title) + '</span> · <em>$' + notice.price.toFixed(2) + '</em>';
+        el.querySelector('.purchase-toast-who').textContent = notice.method || 'Paid with card';
+        el.querySelector('.purchase-toast-msg').innerHTML = ' <span>' + escapeHtml(notice.title) + '</span> · <em>$' + notice.price.toFixed(2) + '</em> · unlocked instantly';
         el.hidden = false;
         el.classList.remove('hide');
         el.classList.add('show');
@@ -478,7 +488,7 @@
         var payBtn = document.getElementById('btn-pay-instant');
         if (payBtn) {
           payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'stripe');
+            startCheckout(v.price, null, v.title, v.id, 'whop');
           };
         }
         if (cryptoWallets.length) {

@@ -146,7 +146,14 @@
       padding: 0.6rem 0.75rem;
       margin-bottom: 0.85rem;
     }
-    .promo-hint svg { vertical-align: -2px; margin-right: 0.3rem; opacity: 0.7; }
+    .promo-foot {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .promo-foot strong { color: #b8b8c8; font-weight: 700; }
     .promo-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .promo-btn {
       border-radius: 999px;
@@ -162,11 +169,16 @@
     }
     .promo-btn:hover { border-color: rgba(255,255,255,0.18); background: #252525; }
     .promo-btn.primary {
-      background: var(--primary);
-      border-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+      border-color: var(--primary-deep);
       color: #fff;
+      box-shadow: 0 6px 24px rgba(0, 175, 240, 0.25);
     }
-    .promo-btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .promo-btn.primary:hover {
+      background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+      border-color: var(--primary);
+      box-shadow: 0 8px 28px rgba(0, 175, 240, 0.32);
+    }
     .hero-over { color: var(--accent-gold); font-size: 0.72rem; font-weight: 800; letter-spacing: .12em; }
     .hero h2 {
       color: var(--primary);
@@ -360,6 +372,7 @@
     }
     .vcard-meta svg { flex-shrink: 0; opacity: 0.5; }
     .btn-row { display: flex; gap: 0.4rem; margin-top: 0.25rem; }
+    .btn-row .btn-primary { font-size: 0.7rem; padding: 0.5rem 0.55rem; letter-spacing: -0.01em; }
     .btn {
       font-family: inherit; font-weight: 600; font-size: 0.78rem; border-radius: 999px;
       padding: 0.52rem 0.75rem; cursor: pointer; border: 1px solid var(--stroke);
@@ -373,14 +386,16 @@
       color: #fff;
     }
     .btn-primary {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
       color: #fff;
-      border-color: var(--primary);
+      border-color: var(--primary-deep);
+      box-shadow: 0 4px 18px rgba(0, 175, 240, 0.22);
     }
     .btn-primary:hover {
-      background: var(--primary-hover);
-      border-color: var(--primary-hover);
+      background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+      border-color: var(--primary);
       color: #fff;
+      box-shadow: 0 6px 22px rgba(0, 175, 240, 0.3);
     }
     .price-row {
       display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
@@ -594,7 +609,7 @@
           Secure
         </span>
         <span class="badge-18">18+ ONLY</span>
-        <a class="nav-link" id="nav-tg" href="#" target="_blank" rel="noopener">Telegram</a>
+        <a class="nav-link" id="nav-tg" href="#" target="_blank" rel="noopener">Support</a>
       </div>
     </div>
   </header>
@@ -614,8 +629,12 @@
         Secure Payment
       </span>
       <span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        Instant Delivery
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        30-Day Guarantee
+      </span>
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Instant Unlock
       </span>
       <span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -628,16 +647,17 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         VIP Offer
       </div>
-      <div class="promo-title">All Content — $100</div>
-      <div class="promo-sub">Complete collection · Instant digital delivery</div>
+      <div class="promo-title">All Content — $200</div>
+      <div class="promo-sub">Complete vault · Stream everything instantly after payment</div>
       <p class="promo-hint">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Secure checkout with card, Apple Pay &amp; Cash App. Charges appear under a discreet descriptor on your statement.
+        Secure checkout with card, Apple Pay &amp; Cash App. Your library unlocks the moment payment is confirmed — no waiting, no manual steps.
       </p>
       <div class="promo-actions">
-        <button type="button" class="promo-btn primary" id="promo-pay">Unlock All — $100</button>
-        <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Contact</a>
+        <button type="button" class="promo-btn primary" id="promo-pay">Pay Instantly — $200</button>
+        <a class="promo-btn" id="promo-tg" href="#" target="_blank" rel="noopener">Help</a>
       </div>
+      <p class="promo-foot"><strong>2,400+ active members</strong> · Discreet billing · 30-day satisfaction guarantee</p>
     </div>
 
     <div id="pay-cancel" class="alert" role="status" hidden>Payment cancelled. No charges were made.</div>
@@ -646,7 +666,7 @@
     <div class="toolbar">
       <div>
         <h1 id="grid-heading">Content</h1>
-        <p class="toolbar-sub">Premium videos · Secure checkout · 18+ only</p>
+        <p class="toolbar-sub">Premium videos · Encrypted checkout · Instant unlock · 18+ only</p>
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
         <span class="chip" id="hydrate-chip" hidden>Loading…</span>
@@ -666,14 +686,14 @@
   </dialog>
 
   <dialog id="dlg-pay" class="dlg-modal" aria-labelledby="dlg-pay-heading">
-    <div class="dlg-h"><strong id="dlg-pay-heading">Checkout</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
+    <div class="dlg-h"><strong id="dlg-pay-heading">Unlock access</strong><button type="button" class="dlg-x" data-close="p" aria-label="Close">×</button></div>
     <div class="dlg-b">
       <div class="pay-summary" id="dlg-pay-summary" aria-live="polite"></div>
-      <div class="pay-note">Secure checkout via Stripe. Charges appear under a neutral descriptor on your statement.</div>
+      <div class="pay-note">Encrypted secure checkout — card, Apple Pay &amp; Cash App. Start watching within seconds once payment is confirmed.</div>
 
       <div class="pay-section">
         <div class="pay-section-title">Instant payment</div>
-        <p class="pay-section-hint">Masked billing — processor sees a generic ebook title, not your video name.</p>
+        <p class="pay-section-hint">Discreet billing on your statement. Your content unlocks automatically — no forms, no waiting.</p>
         <button type="button" class="btn btn-primary btn-block btn-pay-cta" id="dlg-pay-instant">
           <span class="btn-pay-inner">
             <span class="btn-pay-text">Pay Instantly</span>
@@ -689,7 +709,7 @@
       <div class="pay-section" id="dlg-pay-crypto-section" hidden>
         <div class="pay-section-title">Cryptocurrency</div>
         <div id="dlg-pay-crypto-list"></div>
-        <a class="btn btn-block btn-ghost" style="margin-top:0.65rem;padding:0.72rem 1rem;border-radius:12px;text-decoration:none" id="dlg-pay-crypto-tg" href="#" target="_blank" rel="noopener">Send proof via Telegram</a>
+        <a class="btn btn-block btn-ghost" style="margin-top:0.65rem;padding:0.72rem 1rem;border-radius:12px;text-decoration:none" id="dlg-pay-crypto-tg" href="#" target="_blank" rel="noopener">Submit payment proof</a>
       </div>
     </div>
   </dialog>
@@ -699,7 +719,7 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       18+ ADULTS ONLY
     </div>
-    <p>© {{SITE_NAME}} · All content is for adults 18+. Secure encrypted checkout. By using this site you agree you are of legal age in your jurisdiction.</p>
+    <p>© {{SITE_NAME}} · Adults 18+ only · Encrypted checkout · Instant access after payment.</p>
   </footer>
 
   <div id="purchase-toast" class="purchase-toast" hidden role="status" aria-live="polite">
@@ -722,6 +742,11 @@
       ];
       var PURCHASE_TOAST_MS = 78000;
       var purchaseToastTimer = null;
+      var PAY_TOAST_METHODS = [
+        'Paid with card',
+        'Paid with Apple Pay',
+        'Paid with Cash App'
+      ];
       function shuffle(arr) {
         var a = arr.slice();
         for (var i = a.length - 1; i > 0; i--) {
@@ -831,7 +856,7 @@
         p2.set('success_url', successUrl);
         p2.set('product_name', masked);
         p2.set('display_title', displayTitle || 'Digital purchase');
-        p2.set('method', method || 'stripe');
+        p2.set('method', method || 'whop');
         if (vid) p2.set('video_id', vid);
         var tgCheckout = (tgUser || TG_ENV || '').replace(/^@/, '').trim();
         if (tgCheckout) p2.set('telegram_username', tgCheckout);
@@ -861,7 +886,7 @@
 
       function tgUrlForPromo(tgUser) {
         var msg =
-          'Hi! I want the special offer: All Content for $100.\n\n' +
+          'Hi! I want the special offer: All Content for $200.\n\n' +
           'I would like to pay with card, Apple Pay or Cash App. Please send me the available payment options.';
         var enc = encodeURIComponent(msg);
         if (tgUser) return 'https://t.me/' + tgUser + '?text=' + enc;
@@ -869,7 +894,7 @@
       }
 
       function startCheckout(price, maskedName, displayTitle, videoId, method) {
-        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'stripe');
+        var url = checkoutUrl(price, maskedName, displayTitle, videoId, method || 'whop');
         if (!url) {
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
@@ -884,7 +909,7 @@
           alert('Checkout is not configured. Set EBOOKS_SITE_URL or VITE_CHECKOUT_URL.');
           return;
         }
-        var amount = 100;
+        var amount = 200;
         var displayTitle = 'VIP Access - Full Collection';
         var successParams = new URLSearchParams();
         successParams.set('status', 'success');
@@ -902,7 +927,7 @@
         p.set('product_name', masked);
         p.set('display_title', displayTitle);
         p.set('offer_type', 'all_content');
-        p.set('method', 'stripe');
+        p.set('method', 'whop');
         if (tg) p.set('telegram_username', tg);
         var cancelP = new URLSearchParams(p.toString());
         cancelP.set('payment_canceled', 'true');
@@ -933,7 +958,8 @@
         if (!v) return null;
         return {
           title: String(v.title || 'Premium access').trim(),
-          price: Number(v.price) || 0
+          price: Number(v.price) || 0,
+          method: pickRandom(PAY_TOAST_METHODS)
         };
       }
 
@@ -942,9 +968,9 @@
         if (!notice) return;
         var el = document.getElementById('purchase-toast');
         if (!el) return;
-        el.querySelector('.purchase-toast-who').textContent = 'Someone purchased';
+        el.querySelector('.purchase-toast-who').textContent = notice.method || 'Paid with card';
         el.querySelector('.purchase-toast-msg').innerHTML =
-          ' <span>' + escapeHtml(notice.title) + '</span> · <em>$' + notice.price.toFixed(2) + '</em>';
+          ' <span>' + escapeHtml(notice.title) + '</span> · <em>$' + notice.price.toFixed(2) + '</em> · unlocked instantly';
         el.hidden = false;
         el.classList.remove('hide');
         el.classList.add('show');
@@ -1079,7 +1105,7 @@
             '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
           var trustLine = isFree
             ? '<span class="vcard-trust-item">' + svgShield + ' Free access</span>'
-            : '<span class="vcard-trust-item">' + svgLock + ' Secure checkout</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">' + svgShield + ' Instant delivery</span>';
+            : '<span class="vcard-trust-item">' + svgLock + ' Secure checkout</span><span class="vcard-trust-dot">·</span><span class="vcard-trust-item">' + svgShield + ' Instant unlock</span>';
           var metaDate = escapeHtml(formatDateRel(v.created_at)) || '—';
           var badgeTop = isFree
             ? '<span class="badge-price">Free</span>'
@@ -1117,7 +1143,7 @@
                 (isFree && v.product_link
                   ? '<a class="btn btn-primary" href="' + escapeAttr(v.product_link) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open</a>'
                   : (!isFree
-                    ? '<button type="button" class="btn btn-primary js-payopen">Buy</button>'
+                    ? '<button type="button" class="btn btn-primary js-payopen">Pay Instantly</button>'
                     : '<button type="button" class="btn js-details">Details</button>')) +
               '</div>' +
               (!isFree
@@ -1144,7 +1170,7 @@
           var po = el.querySelector('.js-payopen');
           if (po) po.addEventListener('click', function (e) {
             e.stopPropagation();
-            startCheckout(v.price, null, v.title, v.id, 'stripe');
+            startCheckout(v.price, null, v.title, v.id, 'whop');
           });
 
           g.appendChild(el);
@@ -1215,11 +1241,11 @@
               '</div>'
             : '') +
           '<p style="font-size:0.72rem;color:#888;margin-bottom:0.65rem;line-height:1.45">' +
-          'Payments use secure Stripe checkout. Charges appear under a neutral descriptor on your statement.</p>' +
+          'Encrypted checkout (card, Apple Pay, Cash App). Your content unlocks instantly after payment — start watching in seconds.</p>' +
           '<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">' +
-          '<a class="btn btn-primary" href="' + escapeAttr(watchPageUrl(v.id)) + '">Watch &amp; pay</a>' +
-          '<a class="btn" href="' + escapeAttr(tgUrlForVideo(v, tgUser) || '#') + '" target="_blank">Contact</a>' +
+          '<a class="btn btn-primary" href="' + escapeAttr(watchPageUrl(v.id)) + '">Watch &amp; unlock</a>' +
           (!v.is_free ? '<button type="button" class="btn js-dpay">Checkout here</button>' : '') +
+          '<a class="btn" href="' + escapeAttr(tgUrlForVideo(v, tgUser) || '#') + '" target="_blank" style="opacity:.75;font-size:.82rem">Questions?</a>' +
           '</div>';
         var bp = d.querySelector('.js-dpay');
         if (bp) bp.addEventListener('click', function () { d.close(); openPay(v); });
@@ -1271,7 +1297,7 @@
         var payBtn = document.getElementById('dlg-pay-instant');
         if (payBtn) {
           payBtn.onclick = function () {
-            startCheckout(v.price, null, v.title, v.id, 'stripe');
+            startCheckout(v.price, null, v.title, v.id, 'whop');
           };
         }
 
